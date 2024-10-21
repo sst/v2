@@ -3,13 +3,13 @@ const config = require("./config");
 module.exports = {
   title: "SST v2",
   tagline: "SST v2 Docs",
-  url: "https://docs.sst.dev",
+  url: "https://v2.sst.dev",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "throw",
   favicon: "img/favicon.ico",
   organizationName: "sst", // Usually your GitHub org/user name.
-  projectName: "sst", // Usually your repo name.
+  projectName: "v2", // Usually your repo name.
   scripts: [
     {
       src: "https://kit.fontawesome.com/18c82fcd4d.js",
@@ -31,7 +31,8 @@ module.exports = {
     metaImage: "img/og-image.png",
     announcementBar: {
       id: "console",
-      content: `Check out SST v3, a new version of SST. <a href="https://sst.dev/">Learn more</a>.`,
+      content:
+        `Check out SST v3, a new version of SST. <a href="https://sst.dev/">Learn more</a>.`,
       backgroundColor: "#395C6B",
       textColor: "#FFFFFF",
       isCloseable: false,
@@ -46,21 +47,8 @@ module.exports = {
       },
       items: [
         {
-          to: "/",
-          label: "Docs",
-          position: "left",
-          activeBaseRegex: "^/$",
-        },
-        {
-          to: config.guide,
-          target: "_self",
-          label: "Guide",
-          position: "left",
-        },
-        {
-          href: config.examples,
-          target: "_self",
-          label: "Examples",
+          to: "https://sst.dev",
+          label: "SST",
           position: "left",
         },
         {
@@ -194,12 +182,12 @@ module.exports = {
               const splits = params.docPath.split("/");
               const name = splits[splits.length - 1].replace(".md", ".ts");
               return (
-                "https://github.com/sst/sst/blob/master/packages/sst/src/constructs/" +
+                "https://github.com/sst/v2/blob/master/packages/sst/src/constructs/" +
                 name
               );
             }
             return (
-              "https://github.com/sst/sst/blob/master/www/docs/" +
+              "https://github.com/sst/v2/blob/master/www/docs/" +
               params.docPath
             );
           },
