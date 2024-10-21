@@ -4,10 +4,8 @@
 <a href="https://www.npmjs.com/package/sst"><img alt="npm" src="https://img.shields.io/npm/v/sst.svg?style=flat-square" /></a>
 <a href="https://github.com/sst/v2/actions/workflows/test.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/sst/v2/test.yml?style=flat-square&branch=master" /></a>
 
-Repo for SST v2.
+Repo for SST v2. [View docs](https://v2.sst.dev).
 
-> For the latest version of SST, head over to [sst.dev](https://sst.dev)
+For the latest version of SST, head over to [sst.dev](https://sst.dev) instead.
 
----
-
-**Join our community** [Discord](https://sst.dev/discord) | [YouTube](https://www.youtube.com/c/sst-dev) | [Twitter](https://twitter.com/SST_dev) | [Contribute](CONTRIBUTING.md)
+Join our community [Discord](https://sst.dev/discord) | [YouTube](https://www.youtube.com/c/sst-dev) | [Twitter](https://twitter.com/SST_dev) | [Contribute](CONTRIBUTING.md)
