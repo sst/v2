@@ -31,14 +31,15 @@ import {
   SsrSiteNormalizedProps,
   SsrSiteProps,
 } from "./SsrSite.js";
+import { getOpenNextPackage } from "./util/compareSemver.js";
 import { Size, toCdkSize } from "./util/size.js";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { VisibleError } from "../error.js";
-import { CachePolicyProps } from "aws-cdk-lib/aws-cloudfront";
 import { SsrFunction } from "./SsrFunction.js";
 import { Logger } from "../logger.js";
+
 type BaseFunction = {
   handler: string;
   bundle: string;
@@ -177,7 +178,7 @@ export interface NextjsSiteProps extends Omit<SsrSiteProps, "nodejs"> {
   };
 }
 
-const DEFAULT_OPEN_NEXT_VERSION = "3.0.2";
+const DEFAULT_OPEN_NEXT_VERSION = "3.1.6";
 
 type NextjsSiteNormalizedProps = NextjsSiteProps & SsrSiteNormalizedProps;
 
@@ -216,11 +217,13 @@ export class NextjsSite extends SsrSite {
   private openNextOutput?: OpenNextOutput;
 
   constructor(scope: Construct, id: string, props: NextjsSiteProps = {}) {
+    const openNextVersion = props.openNextVersion ?? DEFAULT_OPEN_NEXT_VERSION;
+
     super(scope, id, {
       buildCommand: [
         "npx",
         "--yes",
-        `open-next@${props?.openNextVersion ?? DEFAULT_OPEN_NEXT_VERSION}`,
+        `${getOpenNextPackage(openNextVersion)}@${openNextVersion}`,
         "build",
       ].join(" "),
       ...props,
