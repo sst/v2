@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.44.1
+
+### Patch Changes
+
+- [`90b69ca`](https://github.com/sst/v2/commit/90b69cae5a8a1e548516c60bb83feeb5e52cef30) Thanks [@fwang](https://github.com/fwang)! - Add xray tracer header to event bus publish
+
 ## 2.44.0
 
 ### Minor Changes
