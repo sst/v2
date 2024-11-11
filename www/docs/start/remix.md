@@ -311,7 +311,7 @@ pnpm sst deploy --stage prod
 </MultiPackagerCode>
 
 :::info
-[View the source](https://github.com/sst/sst/tree/master/examples/quickstart-remix) for this example on GitHub.
+[View the source](https://github.com/sst/v2/tree/master/examples/quickstart-remix) for this example on GitHub.
 :::
 
 ---

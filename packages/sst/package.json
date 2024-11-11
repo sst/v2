@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sst/sst.git",
+    "url": "git+https://github.com/sst/v2.git",
     "directory": "packages/cli"
   },
   "exports": {
@@ -143,7 +143,7 @@
     }
   },
   "bugs": {
-    "url": "https://github.com/sst/sst/issues"
+    "url": "https://github.com/sst/v2/issues"
   },
   "main": "index.js",
   "directories": {
