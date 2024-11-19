@@ -189,7 +189,7 @@ export interface JobProps {
    */
   memorySize?: JobMemorySize;
   /**
-   * The execution timeout. Minimum 5 minutes. Maximum 8 hours.
+   * The execution timeout. Minimum 5 minutes. Maximum 36 hours.
    *
    * @default "8 hours"
    *
@@ -785,7 +785,7 @@ export class Job extends Construct implements SSTConstruct {
 
   private normalizeTimeout(timeout: Duration): CdkDuration {
     const value = toCdkDuration(timeout);
-    if (value.toSeconds() < 5 * 60 || value.toSeconds() > 480 * 60) {
+    if (value.toSeconds() < 5 * 60 || value.toSeconds() > 2160 * 60) {
       throw new Error(`Invalid timeout value for the ${this.node.id} Job.`);
     }
     return value;
