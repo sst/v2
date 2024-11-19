@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.44.2
+
+### Patch Changes
+
+- [#11](https://github.com/sst/v2/pull/11) [`ec59a15`](https://github.com/sst/v2/commit/ec59a15c05acc008e36c3be8ec3b76aada3be49c) Thanks [@ryanwalters](https://github.com/ryanwalters)! - feat(Job): increase max timeout to 36 hours
+
 ## 2.44.1
 
 ### Patch Changes
