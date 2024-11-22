@@ -138,6 +138,7 @@ export interface FunctionProps
     | "layers"
     | "architecture"
     | "logRetention"
+    | "ephemeralStorageSize"
   > {
   /**
    * Used to configure additional files to copy into the function bundle
