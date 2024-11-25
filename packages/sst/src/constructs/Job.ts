@@ -150,7 +150,7 @@ export interface JobProps {
    * })
    *```
    */
-  runtime?: "nodejs" | "nodejs16.x" | "nodejs18.x" | "nodejs20.x" | "container";
+  runtime?: "nodejs" | "nodejs16.x" | "nodejs18.x" | "nodejs20.x" | "nodejs22.x" | "container";
   /**
    * For "nodejs" runtime, point to the entry point and handler function.
    * Of the format: `/path/to/file.function`.
@@ -644,12 +644,14 @@ export class Job extends Construct implements SSTConstruct {
           "nodejs16.x": "amazon/aws-lambda-nodejs:16.2023.07.13.14",
           "nodejs18.x": "amazon/aws-lambda-nodejs:18.2023.12.14.13",
           "nodejs20.x": "amazon/aws-lambda-nodejs:20.2023.12.14.13",
+          "nodejs22.x": "amazon/aws-lambda-nodejs:22.2024.11.22.14",
         },
         x86_64: {
           nodejs: "amazon/aws-lambda-nodejs:16",
           "nodejs16.x": "amazon/aws-lambda-nodejs:16",
           "nodejs18.x": "amazon/aws-lambda-nodejs:18",
           "nodejs20.x": "amazon/aws-lambda-nodejs:20",
+          "nodejs22.x": "amazon/aws-lambda-nodejs:22",
         },
       };
       const image = LinuxBuildImage.fromDockerRegistry(

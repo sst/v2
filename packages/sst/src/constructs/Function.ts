@@ -71,6 +71,7 @@ const supportedRuntimes = {
   "nodejs16.x": CDKRuntime.NODEJS_16_X,
   "nodejs18.x": CDKRuntime.NODEJS_18_X,
   "nodejs20.x": CDKRuntime.NODEJS_20_X,
+  "nodejs22.x": CDKRuntime.NODEJS_22_X,
   "python3.7": CDKRuntime.PYTHON_3_7,
   "python3.8": CDKRuntime.PYTHON_3_8,
   "python3.9": CDKRuntime.PYTHON_3_9,

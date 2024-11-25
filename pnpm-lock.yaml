@@ -293,7 +293,7 @@ importers:
     dependencies:
       '@aws-cdk/aws-lambda-python-alpha':
         specifier: 2.161.1-alpha.0
-        version: 2.161.1-alpha.0(aws-cdk-lib@2.161.1)(constructs@10.3.0)
+        version: 2.161.1-alpha.0(aws-cdk-lib@2.170.0)(constructs@10.3.0)
       '@aws-cdk/cloud-assembly-schema':
         specifier: 38.0.1
         version: 38.0.1
@@ -376,8 +376,8 @@ importers:
         specifier: ^0.5.10
         version: 0.5.10
       aws-cdk-lib:
-        specifier: 2.161.1
-        version: 2.161.1(constructs@10.3.0)
+        specifier: 2.170.0
+        version: 2.170.0(constructs@10.3.0)
       aws-iot-device-sdk:
         specifier: ^2.2.13
         version: 2.2.13
@@ -566,7 +566,7 @@ importers:
         specifier: ^5.3.1
         version: 5.3.1
       astro-sst:
-        specifier: 2.43.8
+        specifier: 2.44.2
         version: link:../astro-sst
       async:
         specifier: ^3.2.4
@@ -854,26 +854,26 @@ packages:
       undici: 5.25.4
     dev: false
 
-  /@aws-cdk/asset-awscli-v1@2.2.202:
-    resolution: {integrity: sha512-JqlF0D4+EVugnG5dAsNZMqhu3HW7ehOXm5SDMxMbXNDMdsF0pxtQKNHRl52z1U9igsHmaFpUgSGjbhAJ+0JONg==}
+  /@aws-cdk/asset-awscli-v1@2.2.212:
+    resolution: {integrity: sha512-7WqbnWUkBBcAzEdfRrpz6sCOheUPf4JEUdGvzJ4EEufXeT7v7nRbRmTvUBbQ+OQlCv9UrVj9XuFxKPjkvneGMQ==}
     dev: false
 
-  /@aws-cdk/asset-kubectl-v20@2.1.2:
-    resolution: {integrity: sha512-3M2tELJOxQv0apCIiuKQ4pAbncz9GuLwnKFqxifWfe77wuMxyTRPmxssYHs42ePqzap1LT6GDcPygGs+hHstLg==}
+  /@aws-cdk/asset-kubectl-v20@2.1.3:
+    resolution: {integrity: sha512-cDG1w3ieM6eOT9mTefRuTypk95+oyD7P5X/wRltwmYxU7nZc3+076YEVS6vrjDKr3ADYbfn0lDKpfB1FBtO9CQ==}
     dev: false
 
   /@aws-cdk/asset-node-proxy-agent-v6@2.1.0:
     resolution: {integrity: sha512-7bY3J8GCVxLupn/kNmpPc5VJz8grx+4RKfnnJiO1LG+uxkZfANZG3RMHhE+qQxxwkyQ9/MfPtTpf748UhR425A==}
     dev: false
 
-  /@aws-cdk/aws-lambda-python-alpha@2.161.1-alpha.0(aws-cdk-lib@2.161.1)(constructs@10.3.0):
+  /@aws-cdk/aws-lambda-python-alpha@2.161.1-alpha.0(aws-cdk-lib@2.170.0)(constructs@10.3.0):
     resolution: {integrity: sha512-87D1EGtpTxSe6IqYFaS110xXNoq1mN4xJ8f9c2g25zRIEm5raEW4dQTXpu0RK2NEzIw6p0V4HaQ3qhSPWN9G6g==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       aws-cdk-lib: ^2.161.1
       constructs: ^10.0.0
     dependencies:
-      aws-cdk-lib: 2.161.1(constructs@10.3.0)
+      aws-cdk-lib: 2.170.0(constructs@10.3.0)
       constructs: 10.3.0
     dev: false
 
@@ -12432,14 +12432,14 @@ packages:
     resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==}
     engines: {node: '>= 0.4'}
 
-  /aws-cdk-lib@2.161.1(constructs@10.3.0):
-    resolution: {integrity: sha512-siVuWLRXD9AcQ2vkTPYbp/oH5KeXmx23voOkk/BcFmM9Sw+0kb1wgFWYCF2LMeFWDa+k5TuWMB0QtChN8/uz9A==}
+  /aws-cdk-lib@2.170.0(constructs@10.3.0):
+    resolution: {integrity: sha512-hlfoOJUZmAY3TjOXjWhAYKlrPcfGNTXA24NirwkEYOX+t1HD8OLSrYZvluMc7nWgIZf1Mq1g6M0xNEZJqykPrA==}
     engines: {node: '>= 14.15.0'}
     peerDependencies:
       constructs: ^10.0.0
     dependencies:
-      '@aws-cdk/asset-awscli-v1': 2.2.202
-      '@aws-cdk/asset-kubectl-v20': 2.1.2
+      '@aws-cdk/asset-awscli-v1': 2.2.212
+      '@aws-cdk/asset-kubectl-v20': 2.1.3
       '@aws-cdk/asset-node-proxy-agent-v6': 2.1.0
       '@aws-cdk/cloud-assembly-schema': 38.0.1
       constructs: 10.3.0

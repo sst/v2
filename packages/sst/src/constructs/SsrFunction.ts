@@ -60,7 +60,7 @@ export interface SsrFunctionProps
   extends Omit<FunctionOptions, "memorySize" | "timeout" | "runtime"> {
   bundle?: string;
   handler: string;
-  runtime?: "nodejs16.x" | "nodejs18.x" | "nodejs20.x";
+  runtime?: "nodejs16.x" | "nodejs18.x" | "nodejs20.x" | "nodejs22.x";
   timeout?: number | Duration;
   memorySize?: number | Size;
   permissions?: Permissions;
@@ -199,7 +199,9 @@ export class SsrFunction extends Construct implements SSTConstruct {
         assetKey
       ),
       runtime:
-        runtime === "nodejs20.x"
+          runtime === "nodejs22.x"
+          ? Runtime.NODEJS_22_X
+          : runtime === "nodejs20.x"
           ? Runtime.NODEJS_20_X
           : runtime === "nodejs16.x"
           ? Runtime.NODEJS_16_X
