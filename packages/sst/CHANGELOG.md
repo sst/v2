@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.44.3
+
+### Patch Changes
+
+- [#14](https://github.com/sst/v2/pull/14) [`633805a`](https://github.com/sst/v2/commit/633805a33c4aae570c58d38d8e0448b04cc44934) Thanks [@neo](https://github.com/neo)! - Omit `ephemeralStorageSize` from `FunctionProps` in favor of `diskSize
+
 ## 2.44.2
 
 ### Patch Changes
