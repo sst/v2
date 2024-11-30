@@ -178,7 +178,7 @@ export interface NextjsSiteProps extends Omit<SsrSiteProps, "nodejs"> {
   };
 }
 
-const DEFAULT_OPEN_NEXT_VERSION = "3.1.6";
+const DEFAULT_OPEN_NEXT_VERSION = "3.2.2";
 
 type NextjsSiteNormalizedProps = NextjsSiteProps & SsrSiteNormalizedProps;
 
