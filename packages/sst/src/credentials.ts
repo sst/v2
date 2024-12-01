@@ -4,6 +4,11 @@ import { Logger } from "./logger.js";
 import { SdkProvider } from "sst-aws-cdk/lib/api/aws-auth/sdk-provider.js";
 import { StandardRetryStrategy } from "@aws-sdk/middleware-retry";
 export type {} from "@smithy/types";
+// @ts-expect-error
+import stupid from "aws-sdk/lib/maintenance_mode_message.js";
+stupid.suppress = true;
+import { useProject } from "./project.js";
+import { lazy } from "./util/lazy.js";
 
 export const useAWSCredentialsProvider = lazy(() => {
   const project = useProject();
@@ -137,46 +142,7 @@ export function useAWSClient<C extends any>(
   return result;
 }
 
-// @ts-expect-error
-import stupid from "aws-sdk/lib/maintenance_mode_message.js";
-stupid.suppress = true;
-import aws from "aws-sdk";
-import { useProject } from "./project.js";
-import { lazy } from "./util/lazy.js";
-const CredentialProviderChain = aws.CredentialProviderChain;
-
-/**
- * Do not use this. It is only used for AWS CDK compatibility.
- */
 export const useAWSProvider = lazy(async () => {
-  Logger.debug("Loading v2 AWS SDK");
   const project = useProject();
-  const creds = await useAWSCredentials();
-  const chain = new CredentialProviderChain([
-    () => ({
-      ...creds,
-      get(cb) {
-        cb();
-      },
-      async getPromise() {},
-      needsRefresh() {
-        return false;
-      },
-      refresh(cb) {
-        cb();
-      },
-      async refreshPromise() {},
-      expired: false,
-      expireTime: creds.expiration!,
-      accessKeyId: creds.accessKeyId!,
-      sessionToken: creds.sessionToken!,
-      secretAccessKey: creds.secretAccessKey!,
-    }),
-  ]);
-  const provider = new SdkProvider(chain, project.config.region!, {
-    maxRetries: 10000,
-    region: project.config.region,
-  });
-
-  return provider;
+  return new SdkProvider(useAWSCredentialsProvider(), project.config.region!);
 });

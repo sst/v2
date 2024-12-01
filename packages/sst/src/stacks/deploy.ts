@@ -130,7 +130,7 @@ export async function deploy(
       },
       toolkitStackName: cdk?.toolkitStackName,
     });
-    if (result?.noOp) {
+    if (result?.type === "did-deploy-stack" && result.noOp) {
       bus.publish("stack.status", {
         stackID: stack.stackName,
         status: "SKIPPED",
