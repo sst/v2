@@ -41,8 +41,18 @@ jobs:
           tar -xvf cdk.tar.gz
           PACKAGE_JSON=./package/package.json
           VERSION=$(jq -r .version $PACKAGE_JSON)-1
-          jq '
-            .dependencies += {chalk: .devDependencies.chalk, yaml: .devDependencies.yaml, promptly: .devDependencies.promptly, archiver: .devDependencies.archiver, "fs-extra": .devDependencies["fs-extra"], "strip-ansi": .devDependencies["strip-ansi"] } |
+          jq -c '
+            .dependencies += (
+              .devDependencies |
+              with_entries(
+                select(
+                  .key != "@aws-cdk/cdk-build-tools" and
+                  .key != "@aws-cdk/pkglint" and
+                  .key != "@aws-cdk/yargs-gen" and
+                  .key != "cdk-assets"
+                )
+              )
+            ) |
             .name = "sst-aws-cdk"
           ' $PACKAGE_JSON > tmp.json
           mv tmp.json $PACKAGE_JSON
