@@ -221,7 +221,7 @@ export interface SsrSiteProps {
    * runtime: "nodejs20.x",
    * ```
    */
-  runtime?: "nodejs16.x" | "nodejs18.x" | "nodejs20.x";
+  runtime?: "nodejs16.x" | "nodejs18.x" | "nodejs20.x" | "nodejs22.x";
   /**
    * Used to configure nodejs function properties
    */

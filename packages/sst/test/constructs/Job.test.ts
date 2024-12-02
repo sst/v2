@@ -128,6 +128,18 @@ test("runtime: nodejs20.x", async () => {
   });
 });
 
+test("runtime: nodejs22.x", async () => {
+  const { stack } = await createJob({
+    runtime: "nodejs22.x",
+    timeout: "1 hour",
+  });
+  hasResource(stack, "AWS::CodeBuild::Project", {
+    Environment: objectLike({
+      Image: "amazon/aws-lambda-nodejs:22",
+    }),
+  });
+});
+
 test("runtime: container", async () => {
   const { stack } = await createJob({
     runtime: "container",
