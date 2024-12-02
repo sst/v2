@@ -1,5 +1,11 @@
 # @sst/console
 
+## 2.45.0
+
+### Patch Changes
+
+- [#15](https://github.com/sst/v2/pull/15) [`03c73f610525072aa809c6ac22539c53ac4a8d65`](https://github.com/sst/v2/commit/03c73f610525072aa809c6ac22539c53ac4a8d65) Thanks [@jared-fraser](https://github.com/jared-fraser)! - Update CDK to 2.171.1
+
 ## 2.44.3
 
 ## 2.44.2
