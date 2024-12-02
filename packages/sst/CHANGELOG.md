@@ -1,5 +1,15 @@
 # @serverless-stack/cli2
 
+## 2.45.0
+
+### Minor Changes
+
+- [`e24e8847c43101870087d7362f35a5bb5c3bbe00`](https://github.com/sst/v2/commit/e24e8847c43101870087d7362f35a5bb5c3bbe00) Thanks [@fwang](https://github.com/fwang)! - Version bump for CDK update
+
+### Patch Changes
+
+- [#15](https://github.com/sst/v2/pull/15) [`03c73f610525072aa809c6ac22539c53ac4a8d65`](https://github.com/sst/v2/commit/03c73f610525072aa809c6ac22539c53ac4a8d65) Thanks [@jared-fraser](https://github.com/jared-fraser)! - Update CDK to 2.171.1
+
 ## 2.44.3
 
 ### Patch Changes
