@@ -24,7 +24,7 @@ importers:
         specifier: 1.8.3
         version: 1.8.3
       typescript:
-        specifier: ^5.2.2
+        specifier: 5.2.2
         version: 5.2.2
       vitest:
         specifier: ^0.33.0
@@ -47,7 +47,7 @@ importers:
         version: 2.4.7
       astro:
         specifier: 4.2.6
-        version: 4.2.6(@types/node@22.10.1)(terser@5.15.1)(typescript@5.2.2)
+        version: 4.2.6(@types/node@22.10.1)(terser@5.15.1)(typescript@5.7.2)
 
   packages/console:
     dependencies:
@@ -575,7 +575,7 @@ importers:
         specifier: ^3.12.1
         version: 3.12.1
       typescript:
-        specifier: ^5.2.2
+        specifier: 5.2.2
         version: 5.2.2
       vitest:
         specifier: ^0.33.0
@@ -12006,6 +12006,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typescript@5.7.2:
+    resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   ua-parser-js@0.7.32:
     resolution: {integrity: sha512-f9BESNVhzlhEFf2CHMSj40NWOjYPl1YKYbrvIr/hFTDEmLq7SRbWvm7FcdcpCYT95zrOhC7gZSxjdnnTpBcwVw==}
 
@@ -22885,7 +22890,7 @@ snapshots:
       '@astrojs/webapi': 3.0.0
       set-cookie-parser: 2.6.0
 
-  astro@4.2.6(@types/node@22.10.1)(terser@5.15.1)(typescript@5.2.2):
+  astro@4.2.6(@types/node@22.10.1)(terser@5.15.1)(typescript@5.7.2):
     dependencies:
       '@astrojs/compiler': 2.5.3
       '@astrojs/internal-helpers': 0.2.1
@@ -22943,7 +22948,7 @@ snapshots:
       shikiji: 0.9.19
       string-width: 7.0.0
       strip-ansi: 7.1.0
-      tsconfck: 3.0.0(typescript@5.2.2)
+      tsconfck: 3.0.0(typescript@5.7.2)
       unist-util-visit: 5.0.0
       vfile: 6.0.1
       vite: 5.1.1(@types/node@22.10.1)(terser@5.15.1)
@@ -31095,9 +31100,9 @@ snapshots:
     optionalDependencies:
       typescript: 5.2.2
 
-  tsconfck@3.0.0(typescript@5.2.2):
+  tsconfck@3.0.0(typescript@5.7.2):
     optionalDependencies:
-      typescript: 5.2.2
+      typescript: 5.7.2
 
   tsconfig-paths@3.15.0:
     dependencies:
@@ -31224,6 +31229,9 @@ snapshots:
   typescript@3.9.10: {}
 
   typescript@5.2.2: {}
+
+  typescript@5.7.2:
+    optional: true
 
   ua-parser-js@0.7.32: {}
 

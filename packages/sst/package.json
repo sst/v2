@@ -131,7 +131,7 @@
     "astro-sst": "2.45.0",
     "async": "^3.2.4",
     "tsx": "^3.12.1",
-    "typescript": "^5.2.2",
+    "typescript": "5.2.2",
     "vitest": "^0.33.0"
   },
   "peerDependencies": {
