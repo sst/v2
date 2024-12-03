@@ -31,7 +31,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@sveltejs/kit": "^1.5.0",
-    "@types/aws-lambda": "^8.10.112"
+    "@sveltejs/kit": "1.5.0",
+    "@types/aws-lambda": "8.10.112"
   }
 }
