@@ -16,7 +16,7 @@ export const deploy = (program: Program) =>
         })
         .positional("filter", {
           type: "string",
-          describe: "Optionally filter stacks to deploy (this is a case insensitive regex)",
+          describe: "Optionally filter stacks to deploy using a case insensitive regex",
         }),
     async (args) => {
       const React = await import("react");
