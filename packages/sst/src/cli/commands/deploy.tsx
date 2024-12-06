@@ -16,7 +16,7 @@ export const deploy = (program: Program) =>
         })
         .positional("filter", {
           type: "string",
-          describe: "Optionally filter stacks to deploy",
+          describe: "Optionally filter stacks to deploy using a regex pattern",
         }),
     async (args) => {
       const React = await import("react");
@@ -82,13 +82,16 @@ export const deploy = (program: Program) =>
         Colors.line(`   ${Colors.bold("Account:")} ${identity.Account}`);
         Colors.gap();
 
+        const filter = !!args.filter && new RegExp(args.filter, "i")
+
         const isActiveStack = (stackId: string) =>
-          !args.filter ||
-          stackId
-            .toLowerCase()
-            .replace(project.config.name.toLowerCase(), "")
-            .replace(project.config.stage.toLowerCase(), "")
-            .includes(args.filter.toLowerCase());
+          !filter ||
+          filter.test(
+            stackId
+              .toLowerCase()
+              .replace(project.config.name.toLowerCase(), "")
+              .replace(project.config.stage.toLowerCase(), "")
+          )
 
         // Generate cloud assembly
         // - if --from is specified, we will use the existing cloud assembly

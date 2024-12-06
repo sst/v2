@@ -7,7 +7,7 @@ export const remove = (program: Program) =>
     (yargs) =>
       yargs.option("from", { type: "string" }).positional("filter", {
         type: "string",
-        describe: "Optionally filter stacks to remove",
+        describe: "Optionally filter stacks to remove using a regex pattern",
       }),
     async (args) => {
       const React = await import("react");
@@ -54,14 +54,16 @@ export const remove = (program: Program) =>
           });
         })();
 
+        const filter = !!args.filter && new RegExp(args.filter, "i")
         const target = assembly.stacks.filter(
           (s) =>
-            !args.filter ||
-            s.id
-              .toLowerCase()
-              .replace(project.config.name.toLowerCase(), "")
-              .replace(project.config.stage.toLowerCase(), "")
-              .includes(args.filter.toLowerCase())
+            !filter ||
+            filter.test(
+              s.id
+                .toLowerCase()
+                .replace(project.config.name.toLowerCase(), "")
+                .replace(project.config.stage.toLowerCase(), "")
+            )
         );
         if (!target.length) {
           console.log(`No stacks found matching ${blue(args.filter!)}`);
