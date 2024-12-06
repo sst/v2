@@ -7,7 +7,7 @@ export const remove = (program: Program) =>
     (yargs) =>
       yargs.option("from", { type: "string" }).positional("filter", {
         type: "string",
-        describe: "Optionally filter stacks to remove (this is a case insensitive regex)",
+        describe: "Optionally filter stacks to remove using a regex pattern",
       }),
     async (args) => {
       const React = await import("react");
