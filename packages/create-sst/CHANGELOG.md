@@ -1,5 +1,7 @@
 # create-sst
 
+## 2.45.1
+
 ## 2.45.0
 
 ### Patch Changes
