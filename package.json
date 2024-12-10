@@ -19,15 +19,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sst/sst.git"
+    "url": "https://github.com/sst/v2.git"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.0",
     "husky": "^8.0.3",
     "prettier": "^2.8.4",
-    "turbo": "^1.8.3",
-    "typescript": "^5.2.2",
+    "turbo": "1.8.3",
+    "typescript": "5.2.2",
     "vitest": "^0.33.0"
   },
   "lint-staged": {

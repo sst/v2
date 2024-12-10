@@ -1,5 +1,41 @@
 # @serverless-stack/cli2
 
+## 2.45.1
+
+### Patch Changes
+
+- [#2](https://github.com/sst/v2/pull/2) [`87636f9008b9cfef2f72f9d4bd92ea423b788120`](https://github.com/sst/v2/commit/87636f9008b9cfef2f72f9d4bd92ea423b788120) Thanks [@sommeeeer](https://github.com/sommeeeer)! - NextjsSite: update OpenNext version
+
+- [#12](https://github.com/sst/v2/pull/12) [`f0a1ab947617dd3a270400d7b2a8ed05f6d65007`](https://github.com/sst/v2/commit/f0a1ab947617dd3a270400d7b2a8ed05f6d65007) Thanks [@wakeless](https://github.com/wakeless)! - cli: Implements a RegExp for the deploy matcher.
+
+## 2.45.0
+
+### Minor Changes
+
+- [`e24e8847c43101870087d7362f35a5bb5c3bbe00`](https://github.com/sst/v2/commit/e24e8847c43101870087d7362f35a5bb5c3bbe00) Thanks [@fwang](https://github.com/fwang)! - Version bump for CDK update
+
+### Patch Changes
+
+- [#15](https://github.com/sst/v2/pull/15) [`03c73f610525072aa809c6ac22539c53ac4a8d65`](https://github.com/sst/v2/commit/03c73f610525072aa809c6ac22539c53ac4a8d65) Thanks [@jared-fraser](https://github.com/jared-fraser)! - Update CDK to 2.171.1
+
+## 2.44.3
+
+### Patch Changes
+
+- [#14](https://github.com/sst/v2/pull/14) [`633805a`](https://github.com/sst/v2/commit/633805a33c4aae570c58d38d8e0448b04cc44934) Thanks [@neo](https://github.com/neo)! - Omit `ephemeralStorageSize` from `FunctionProps` in favor of `diskSize
+
+## 2.44.2
+
+### Patch Changes
+
+- [#11](https://github.com/sst/v2/pull/11) [`ec59a15`](https://github.com/sst/v2/commit/ec59a15c05acc008e36c3be8ec3b76aada3be49c) Thanks [@ryanwalters](https://github.com/ryanwalters)! - feat(Job): increase max timeout to 36 hours
+
+## 2.44.1
+
+### Patch Changes
+
+- [`90b69ca`](https://github.com/sst/v2/commit/90b69cae5a8a1e548516c60bb83feeb5e52cef30) Thanks [@fwang](https://github.com/fwang)! - Add xray tracer header to event bus publish
+
 ## 2.44.0
 
 ### Minor Changes

@@ -7,8 +7,7 @@ import {
   TemplateParameters,
   waitForStackDelete,
 } from "sst-aws-cdk/lib/api/util/cloudformation.js";
-import { Mode } from "sst-aws-cdk/lib/api/aws-auth/credentials.js";
-import { ISDK } from "sst-aws-cdk/lib/api/aws-auth/sdk.js";
+import { SDK } from "sst-aws-cdk/lib/api/aws-auth/sdk.js";
 import { EnvironmentResources } from "sst-aws-cdk/lib/api/environment-resources.js";
 import { addMetadataAssetsToManifest } from "sst-aws-cdk/lib/assets.js";
 import { publishAssets } from "sst-aws-cdk/lib/util/asset-publishing.js";
@@ -21,6 +20,7 @@ import {
 } from "./deployments.js";
 import { DeployStackOptions } from "./deploy-stack.js";
 import { lazy } from "../util/lazy.js";
+import { StringWithoutPlaceholders } from "sst-aws-cdk/lib/api/util/placeholders.js";
 
 export async function publishDeployAssets(
   sdkProvider: SdkProvider,
@@ -31,29 +31,17 @@ export async function publishDeployAssets(
     envResources,
     stackSdk,
     resolvedEnvironment,
-    cloudFormationRoleArn,
+    executionRoleArn,
   } = await useDeployment().get(sdkProvider, options);
 
-  // TODO
-  // old
-  //await deployment.publishStackAssets(options.stack, toolkitInfo, {
-  //  buildAssets: options.buildAssets ?? true,
-  //  publishOptions: {
-  //    quiet: options.quiet,
-  //    parallel: options.assetParallelism,
-  //  },
-  //});
-
-  // new
   const assetArtifacts = options.stack.dependencies.filter(
     cxapi.AssetManifestArtifact.isAssetManifestArtifact
   );
   for (const asset of assetArtifacts) {
     const manifest = AssetManifest.fromFile(asset.file);
-    //await buildAssets(manifest, sdkProvider, resolvedEnvironment, {
-    //});
     await publishAssets(manifest, sdkProvider, resolvedEnvironment, {
       buildAssets: true,
+      allowCrossAccount: true,
       quiet: options.quiet,
       parallel: options.assetParallelism,
     });
@@ -68,7 +56,7 @@ export async function publishDeployAssets(
     quiet: options.quiet,
     sdk: stackSdk,
     sdkProvider,
-    roleArn: cloudFormationRoleArn,
+    roleArn: executionRoleArn,
     reuseAssets: options.reuseAssets,
     envResources,
     tags: options.tags,
@@ -93,9 +81,9 @@ const useDeployment = lazy(() => {
     {
       deployment: Deployments;
       envResources: EnvironmentResources;
-      stackSdk: ISDK;
+      stackSdk: SDK;
       resolvedEnvironment: Environment;
-      cloudFormationRoleArn?: string;
+      executionRoleArn?: StringWithoutPlaceholders;
     }
   >();
   return {
@@ -103,15 +91,12 @@ const useDeployment = lazy(() => {
       const region = options.stack.environment.region;
       if (!state.has(region)) {
         const deployment = new Deployments({ sdkProvider });
-        const {
-          stackSdk,
-          resolvedEnvironment,
-          cloudFormationRoleArn,
-          envResources,
-        } = await deployment.prepareSdkFor(
-          options.stack,
-          options.roleArn,
-          Mode.ForWriting
+        const env = await deployment.envs.accessStackForMutableStackOperations(
+          options.stack
+        );
+        const envResources = env.resources;
+        const executionRoleArn = await env.replacePlaceholders(
+          options.roleArn ?? options.stack.cloudFormationExecutionRoleArn
         );
 
         // Do a verification of the bootstrap stack version
@@ -125,9 +110,9 @@ const useDeployment = lazy(() => {
         state.set(region, {
           deployment,
           envResources,
-          stackSdk,
-          resolvedEnvironment,
-          cloudFormationRoleArn,
+          stackSdk: env.sdk,
+          resolvedEnvironment: env.resolvedEnvironment,
+          executionRoleArn,
         });
       }
       return state.get(region)!;
@@ -150,7 +135,7 @@ async function deployStack(options: DeployStackOptions): Promise<any> {
     debug(
       `Found existing stack ${deployName} that had previously failed creation. Deleting it before attempting to re-create it.`
     );
-    await cfn.deleteStack({ StackName: deployName }).promise();
+    await cfn.deleteStack({ StackName: deployName });
     const deletedStack = await waitForStackDelete(cfn, deployName);
     if (deletedStack && deletedStack.stackStatus.name !== "DELETE_COMPLETE") {
       throw new Error(
@@ -191,7 +176,6 @@ async function deployStack(options: DeployStackOptions): Promise<any> {
     options.resolvedEnvironment,
     legacyAssets,
     options.envResources,
-    options.sdk,
     options.overrideTemplate
   );
   await publishAssets(
@@ -200,6 +184,7 @@ async function deployStack(options: DeployStackOptions): Promise<any> {
     stackEnv,
     {
       parallel: options.assetParallelism,
+      allowCrossAccount: true,
     }
   );
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.0.0/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "sst/sst" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "sst/v2" }],
   "commit": false,
   "fixed": [
     [

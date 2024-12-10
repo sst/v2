@@ -129,6 +129,7 @@ export function cookie<T extends keyof SessionTypes>(input: {
 }): APIGatewayProxyStructuredResultV2 {
   const token = create(input);
   const expires = new Date(
+    // @ts-ignore error in GH action
     Date.now() + (input.options?.expiresIn || 1000 * 60 * 60 * 24 * 7)
   );
   return {
