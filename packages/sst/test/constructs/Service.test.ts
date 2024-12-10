@@ -15,6 +15,7 @@ import {
 import { Config, Stack, Topic, Service } from "../../dist/constructs";
 import { ServiceProps } from "../../dist/constructs/Service";
 import { HttpVersion } from "aws-cdk-lib/aws-cloudfront";
+import { Schedule } from "aws-cdk-lib/aws-autoscaling";
 
 const servicePath = "test/constructs/service";
 
@@ -438,6 +439,44 @@ test("scaling.requestsPerContainer defined", async () => {
       }),
       TargetValue: 1000,
     }),
+  });
+});
+
+test("scaling.customScaling defined", async () => {
+  const { service, stack } = await createService({
+    scaling: {
+      customScaling: (scaling) => {
+        scaling.scaleOnSchedule("StartOnSchedule", {
+          schedule: Schedule.expression("cron(0 8 ? * MON-FRI *)"),
+          minCapacity: 1,
+        });
+
+        scaling.scaleOnSchedule("StopOnSchedule", {
+          schedule: Schedule.expression("cron(0 18 ? * MON-MON *)"),
+          minCapacity: 0,
+        });
+      },
+    },
+  });
+
+  hasResource(stack, "AWS::ApplicationAutoScaling::ScalableTarget", {
+    ScheduledActions: arrayWith([
+      {
+        ScheduledActionName: "StartOnSchedule",
+        ScalableTargetAction: { MinCapacity: 1 },
+        Schedule: "cron(0 8 ? * MON-FRI *)",
+      }
+    ]),
+  });
+
+  hasResource(stack, "AWS::ApplicationAutoScaling::ScalableTarget", {
+    ScheduledActions: arrayWith([
+      {
+        ScheduledActionName: "StopOnSchedule",
+        ScalableTargetAction: { MinCapacity: 0 },
+        Schedule: "cron(0 18 ? * MON-MON *)",
+      }
+    ]),
   });
 });
 

@@ -65,6 +65,7 @@ import {
   FargateTaskDefinition,
   FargateServiceProps,
   ICluster,
+  ScalableTaskCount,
 } from "aws-cdk-lib/aws-ecs";
 import { LogGroup, LogRetention, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Platform } from "aws-cdk-lib/aws-ecr-assets";
@@ -324,6 +325,22 @@ export interface ServiceProps {
      *```
      */
     requestsPerContainer?: number;
+    /**
+     * Provides a way to customize the scaling behavior on top of the predefined rules.
+     * @example
+     * ```js
+     * {
+     *  scaling: {
+     *   customScaling: (scaling) => {
+     *     scaling.scaleOnSchedule("StartOnSchedule", {
+     *       schedule: autoscaling.Schedule.expression(`cron(0 8 ? * MON-FRI *)`),
+     *       minCapacity: 1,
+     *     });
+     *   }
+     * }
+     * ```
+     */
+    customScaling?: (scaling: ScalableTaskCount) => void;
   };
   /**
    * Bind resources for the function
@@ -1092,6 +1109,7 @@ export class Service extends Construct implements SSTConstruct {
       cpuUtilization,
       memoryUtilization,
       requestsPerContainer,
+      customScaling,
     } = this.props.scaling ?? {};
 
     const scaling = service.autoScaleTaskCount({
@@ -1111,6 +1129,9 @@ export class Service extends Construct implements SSTConstruct {
         requestsPerTarget: requestsPerContainer ?? 500,
         targetGroup: target,
       });
+    }
+    if (customScaling) {
+      customScaling(scaling);
     }
   }
 
