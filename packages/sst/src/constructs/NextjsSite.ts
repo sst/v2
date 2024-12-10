@@ -31,7 +31,7 @@ import {
   SsrSiteNormalizedProps,
   SsrSiteProps,
 } from "./SsrSite.js";
-import { getOpenNextPackage } from "./util/compareSemver.js";
+import { compareSemver } from "./util/compareSemver.js";
 import { Size, toCdkSize } from "./util/size.js";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { PolicyStatement } from "aws-cdk-lib/aws-iam";
@@ -218,12 +218,15 @@ export class NextjsSite extends SsrSite {
 
   constructor(scope: Construct, id: string, props: NextjsSiteProps = {}) {
     const openNextVersion = props.openNextVersion ?? DEFAULT_OPEN_NEXT_VERSION;
-
     super(scope, id, {
       buildCommand: [
         "npx",
         "--yes",
-        `${getOpenNextPackage(openNextVersion)}@${openNextVersion}`,
+        `${
+          compareSemver(openNextVersion, "3.1.3") <= 0
+            ? "open-next"
+            : "@opennextjs/aws"
+        }@${openNextVersion}`,
         "build",
       ].join(" "),
       ...props,

@@ -1,4 +1,4 @@
-function compareSemver(v1: string, v2: string): number {
+export function compareSemver(v1: string, v2: string): number {
   if (v1 === "latest") return 1;
   if (/^[^\d]/.test(v1)) {
     v1 = v1.substring(1);
@@ -12,8 +12,4 @@ function compareSemver(v1: string, v2: string): number {
   if (major1 !== major2) return major1 - major2;
   if (minor1 !== minor2) return minor1 - minor2;
   return patch1 - patch2;
-}
-
-export function getOpenNextPackage(openNextVersion: string): string {
-  return compareSemver(openNextVersion, "3.1.3") <= 0 ? "open-next" : "@opennextjs/aws";
 }
