@@ -1,5 +1,13 @@
 # @serverless-stack/cli2
 
+## 2.45.1
+
+### Patch Changes
+
+- [#2](https://github.com/sst/v2/pull/2) [`87636f9008b9cfef2f72f9d4bd92ea423b788120`](https://github.com/sst/v2/commit/87636f9008b9cfef2f72f9d4bd92ea423b788120) Thanks [@sommeeeer](https://github.com/sommeeeer)! - NextjsSite: update OpenNext version
+
+- [#12](https://github.com/sst/v2/pull/12) [`f0a1ab947617dd3a270400d7b2a8ed05f6d65007`](https://github.com/sst/v2/commit/f0a1ab947617dd3a270400d7b2a8ed05f6d65007) Thanks [@wakeless](https://github.com/wakeless)! - cli: Implements a RegExp for the deploy matcher.
+
 ## 2.45.0
 
 ### Minor Changes
