@@ -1,11 +1,6 @@
-<p align="center">
-  <img alt="create sst" src="https://raw.githubusercontent.com/serverless-stack/identity/main/create-sst/create-sst.svg" width="300" />
-</p>
+# create-sst
 
-<p align="center">
-  <a href="https://sst.dev/discord"><img alt="Discord" src="https://img.shields.io/discord/983865673656705025?style=flat-square" /></a>
-  <a href="https://www.npmjs.com/package/create-sst"><img alt="npm" src="https://img.shields.io/npm/v/create-sst?style=flat-square" /></a>
-</p>
+**Important:** This is only for older SST v2 apps. For SST v3, use the [`sst init`](https://sst.dev/docs/reference/cli#init) CLI.
 
 ---
 
@@ -66,7 +61,7 @@ Specify a project name, instead of typing it into the interactive prompt.
 npx create-sst@two my-sst-app
 ```
 
-For more details, [head over to our docs](https://docs.sst.dev).
+For more details, [head over to our docs](https://v2.sst.dev).
 
 ---
 
