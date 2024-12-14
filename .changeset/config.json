@@ -3,14 +3,7 @@
   "changelog": ["@changesets/changelog-github", { "repo": "sst/v2" }],
   "commit": false,
   "fixed": [
-    [
-      "@sst/console",
-      "create-sst",
-      "sst",
-      "astro-sst",
-      "svelte-kit-sst",
-      "solid-start-sst"
-    ]
+    ["@sst/console", "create-sst", "sst", "svelte-kit-sst", "solid-start-sst"]
   ],
   "linked": [],
   "access": "public",
