@@ -878,7 +878,7 @@ export class Function extends CDKFunction implements SSTConstruct {
       .forEach((per) => {
         props = Function.mergeProps(per, props);
       });
-    props.runtime = props.runtime || "nodejs18.x";
+    props.runtime = props.runtime || "nodejs20.x";
     if (props.runtime === "go1.x") useWarning().add("go.deprecated");
 
     // Set defaults
@@ -920,7 +920,7 @@ export class Function extends CDKFunction implements SSTConstruct {
         code: Code.fromInline("export function placeholder() {}"),
         handler: "index.placeholder",
         functionName,
-        runtime: CDKRuntime.NODEJS_18_X,
+        runtime: CDKRuntime.NODEJS_20_X,
         memorySize,
         ephemeralStorageSize: diskSize,
         timeout,
@@ -974,7 +974,7 @@ export class Function extends CDKFunction implements SSTConstruct {
             }
           : {
               description,
-              runtime: CDKRuntime.NODEJS_18_X,
+              runtime: CDKRuntime.NODEJS_20_X,
               code: Code.fromAsset(
                 path.resolve(__dirname, "../support/bridge")
               ),
@@ -1022,13 +1022,13 @@ export class Function extends CDKFunction implements SSTConstruct {
           ? {
               code: Code.fromInline("export function placeholder() {}"),
               handler: "index.placeholder",
-              runtime: CDKRuntime.NODEJS_18_X,
+              runtime: CDKRuntime.NODEJS_20_X,
               layers: undefined,
             }
           : {
               code: Code.fromInline("export function placeholder() {}"),
               handler: "index.placeholder",
-              runtime: CDKRuntime.NODEJS_18_X,
+              runtime: CDKRuntime.NODEJS_20_X,
               layers: Function.buildLayers(scope, id, props),
             }),
         architecture,
