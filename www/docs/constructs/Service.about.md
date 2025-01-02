@@ -151,6 +151,32 @@ new Service(stack, "MyService", {
 });
 ```
 
+### Applying custom auto-scaling rules
+
+Default rules can be disabled by setting values to false.
+
+Custom rules can be applied using scaling property.
+
+```js
+import { Schedule } from "aws-cdk-lib/aws-applicationautoscaling";
+
+const service = new Service(stack, "MyService", {
+  scaling: {
+    minContainers: 4,
+    maxContainers: 16,
+    cpuUtilization: false, // disable default rules
+    memoryUtilization: false,
+    requestsPerContainer: false,
+  }
+});
+
+// Starts the service at 9AM Monday to Friday
+service.cdk?.scaling.scaleOnSchedule("StartOnSchedule", {
+  schedule: Schedule.expression(`cron(0 9 ? * MON-FRI *)`),
+  minCapacity: 1,
+});
+```
+
 ---
 
 ## Custom domains
