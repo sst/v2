@@ -203,8 +203,6 @@ export class SsrFunction extends Construct implements SSTConstruct {
           ? Runtime.NODEJS_22_X
           : runtime === "nodejs20.x"
           ? Runtime.NODEJS_20_X
-          : runtime === "nodejs16.x"
-          ? Runtime.NODEJS_16_X
           : Runtime.NODEJS_18_X,
       architecture,
       memorySize:

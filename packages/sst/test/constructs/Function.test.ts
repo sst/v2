@@ -2698,7 +2698,7 @@ test("fromDefinition-lambdaFunction", async () => {
       stack,
       "Function",
       new lambda.Function(stack, "Function", {
-        runtime: lambda.Runtime.NODEJS_18_X,
+        runtime: lambda.Runtime.NODEJS_22_X,
         handler: "test/lambda.handler",
         code: lambda.Code.fromAsset("test"),
       }) as Function

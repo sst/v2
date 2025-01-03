@@ -68,7 +68,6 @@ const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 const supportedRuntimes = {
   container: CDKRuntime.FROM_IMAGE,
   rust: CDKRuntime.PROVIDED_AL2023,
-  "nodejs16.x": CDKRuntime.NODEJS_16_X,
   "nodejs18.x": CDKRuntime.NODEJS_18_X,
   "nodejs20.x": CDKRuntime.NODEJS_20_X,
   "nodejs22.x": CDKRuntime.NODEJS_22_X,
@@ -920,7 +919,7 @@ export class Function extends CDKFunction implements SSTConstruct {
         code: Code.fromInline("export function placeholder() {}"),
         handler: "index.placeholder",
         functionName,
-        runtime: CDKRuntime.NODEJS_18_X,
+        runtime: CDKRuntime.NODEJS_22_X,
         memorySize,
         ephemeralStorageSize: diskSize,
         timeout,
@@ -974,7 +973,7 @@ export class Function extends CDKFunction implements SSTConstruct {
             }
           : {
               description,
-              runtime: CDKRuntime.NODEJS_18_X,
+              runtime: CDKRuntime.NODEJS_22_X,
               code: Code.fromAsset(
                 path.resolve(__dirname, "../support/bridge")
               ),
@@ -1022,13 +1021,13 @@ export class Function extends CDKFunction implements SSTConstruct {
           ? {
               code: Code.fromInline("export function placeholder() {}"),
               handler: "index.placeholder",
-              runtime: CDKRuntime.NODEJS_18_X,
+              runtime: CDKRuntime.NODEJS_22_X,
               layers: undefined,
             }
           : {
               code: Code.fromInline("export function placeholder() {}"),
               handler: "index.placeholder",
-              runtime: CDKRuntime.NODEJS_18_X,
+              runtime: CDKRuntime.NODEJS_22_X,
               layers: Function.buildLayers(scope, id, props),
             }),
         architecture,
