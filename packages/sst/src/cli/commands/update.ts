@@ -1,7 +1,7 @@
 import type { Program } from "../program.js";
 
 const FIELDS = ["dependencies", "devDependencies"];
-const SST_PKGS = ["sst", "astro-sst", "svelte-kit-sst", "solid-start-sst"];
+const SST_PKGS = ["sst", "svelte-kit-sst", "solid-start-sst"];
 type Packages = Set<[string, string]>;
 
 export const update = (program: Program) =>
