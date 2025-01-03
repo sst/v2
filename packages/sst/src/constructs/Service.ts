@@ -65,6 +65,7 @@ import {
   FargateTaskDefinition,
   FargateServiceProps,
   ICluster,
+  ScalableTaskCount,
 } from "aws-cdk-lib/aws-ecs";
 import { LogGroup, LogRetention, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Platform } from "aws-cdk-lib/aws-ecr-assets";
@@ -284,7 +285,7 @@ export interface ServiceProps {
      */
     maxContainers?: number;
     /**
-     * Scales in or out to achieve a target cpu utilization.
+     * Scales in or out to achieve a target cpu utilization. Set to false to disable.
      * @default 70
      * @example
      * ```js
@@ -296,9 +297,9 @@ export interface ServiceProps {
      * }
      *```
      */
-    cpuUtilization?: number;
+    cpuUtilization?: number | false;
     /**
-     * Scales in or out to achieve a target memory utilization.
+     * Scales in or out to achieve a target memory utilization. Set to false to disable.
      * @default 70
      * @example
      * ```js
@@ -310,9 +311,9 @@ export interface ServiceProps {
      * }
      *```
      */
-    memoryUtilization?: number;
+    memoryUtilization?: number | false;
     /**
-     * Scales in or out to achieve a target request count per container.
+     * Scales in or out to achieve a target request count per container. Set to false to disable.
      * @default 500
      * @example
      * ```js
@@ -323,7 +324,7 @@ export interface ServiceProps {
      * }
      *```
      */
-    requestsPerContainer?: number;
+    requestsPerContainer?: number | false;
   };
   /**
    * Bind resources for the function
@@ -660,6 +661,7 @@ export class Service extends Construct implements SSTConstruct {
   private service?: FargateService;
   private distribution?: Distribution;
   private alb?: ApplicationLoadBalancer;
+  private scaling?: ScalableTaskCount;
 
   constructor(scope: Construct, id: string, props: ServiceProps) {
     super(scope, id);
@@ -695,7 +697,7 @@ export class Service extends Construct implements SSTConstruct {
     const cluster = this.createCluster(vpc);
     const { container, taskDefinition, service } = this.createService(cluster);
     const { alb, target } = this.createLoadBalancer(vpc, service);
-    this.createAutoScaling(service, target);
+    const { scaling } = this.createAutoScaling(service, target);
     this.alb = alb;
 
     // Create Distribution
@@ -706,6 +708,7 @@ export class Service extends Construct implements SSTConstruct {
     this.service = service;
     this.container = container;
     this.taskDefinition = taskDefinition;
+    this.scaling = scaling;
     this.bindForService(props?.bind || []);
     this.attachPermissionsForService(props?.permissions || []);
     Object.entries(props?.environment || {}).map(([key, value]) =>
@@ -784,6 +787,7 @@ export class Service extends Construct implements SSTConstruct {
       applicationLoadBalancer: this.alb,
       hostedZone: this.distribution?.cdk.hostedZone,
       certificate: this.distribution?.cdk.certificate,
+      scaling: this.scaling,
     };
   }
 
@@ -1089,29 +1093,35 @@ export class Service extends Construct implements SSTConstruct {
     const {
       minContainers,
       maxContainers,
-      cpuUtilization,
-      memoryUtilization,
-      requestsPerContainer,
+      cpuUtilization = 70,
+      memoryUtilization = 70,
+      requestsPerContainer = 500,
     } = this.props.scaling ?? {};
 
     const scaling = service.autoScaleTaskCount({
       minCapacity: minContainers ?? 1,
       maxCapacity: maxContainers ?? 1,
     });
-    scaling.scaleOnCpuUtilization("CpuScaling", {
-      targetUtilizationPercent: cpuUtilization ?? 70,
-      scaleOutCooldown: CdkDuration.seconds(300),
-    });
-    scaling.scaleOnMemoryUtilization("MemoryScaling", {
-      targetUtilizationPercent: memoryUtilization ?? 70,
-      scaleOutCooldown: CdkDuration.seconds(300),
-    });
-    if (target) {
+    if (cpuUtilization !== false) {
+      scaling.scaleOnCpuUtilization("CpuScaling", {
+        targetUtilizationPercent: cpuUtilization,
+        scaleOutCooldown: CdkDuration.seconds(300),
+      });
+    }
+    if (memoryUtilization !== false) {
+      scaling.scaleOnMemoryUtilization("MemoryScaling", {
+        targetUtilizationPercent: memoryUtilization,
+        scaleOutCooldown: CdkDuration.seconds(300),
+      });
+    }
+    if (target && requestsPerContainer !== false) {
       scaling.scaleOnRequestCount("RequestScaling", {
-        requestsPerTarget: requestsPerContainer ?? 500,
+        requestsPerTarget: requestsPerContainer,
         targetGroup: target,
       });
     }
+
+    return { scaling };
   }
 
   private createDistribution(alb?: ApplicationLoadBalancer) {
