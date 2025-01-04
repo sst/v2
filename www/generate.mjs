@@ -79,6 +79,7 @@ const CDK_DOCS_MAP = {
   HttpLambdaResponseType: "aws_apigatewayv2_authorizers",
   HttpUserPoolAuthorizer: "aws_apigatewayv2_authorizers",
   WebSocketLambdaAuthorizer: "aws_apigatewayv2_authorizers",
+  ScalableTaskCount: "aws_ecs",
   ServerlessCluster: "aws_rds",
   IServerlessCluster: "aws_rds",
   Role: "aws_iam",

@@ -328,6 +328,33 @@ new Service(stack, "MyService", {
 
 ### Advanced examples
 
+#### Configuring Custom Scaling
+
+Here's an example of disabling the default scaling rules.
+
+```js
+const service = new Service(stack, "MyService", {
+  scaling: {
+    minContainers: 4,
+    maxContainers: 16,
+    cpuUtilization: false, // disable default rules
+    memoryUtilization: false,
+    requestsPerContainer: false,
+  }
+});
+```
+
+And add a custom rule to start the service at 9am Monday to Friday
+
+```js
+import { Schedule } from "aws-cdk-lib/aws-applicationautoscaling";
+
+service.cdk?.scaling.scaleOnSchedule("StartOnSchedule", {
+  schedule: Schedule.expression(`cron(0 9 ? * MON-FRI *)`),
+  minCapacity: 1,
+});
+```
+
 #### Configuring Fargate Service
 
 Here's an example of configuring the circuit breaker for the Fargate service.
