@@ -285,7 +285,7 @@ export interface ServiceProps {
      */
     maxContainers?: number;
     /**
-     * Scales in or out to achieve a target cpu utilization. Set to false to disable.
+     * Scales in or out to achieve a target cpu utilization. Set to `false` to disable.
      * @default 70
      * @example
      * ```js
@@ -299,7 +299,7 @@ export interface ServiceProps {
      */
     cpuUtilization?: number | false;
     /**
-     * Scales in or out to achieve a target memory utilization. Set to false to disable.
+     * Scales in or out to achieve a target memory utilization. Set to `false` to disable.
      * @default 70
      * @example
      * ```js
@@ -313,7 +313,7 @@ export interface ServiceProps {
      */
     memoryUtilization?: number | false;
     /**
-     * Scales in or out to achieve a target request count per container. Set to false to disable.
+     * Scales in or out to achieve a target request count per container. Set to `false` to disable.
      * @default 500
      * @example
      * ```js
@@ -697,7 +697,7 @@ export class Service extends Construct implements SSTConstruct {
     const cluster = this.createCluster(vpc);
     const { container, taskDefinition, service } = this.createService(cluster);
     const { alb, target } = this.createLoadBalancer(vpc, service);
-    const { scaling } = this.createAutoScaling(service, target);
+    const scaling = this.createAutoScaling(service, target);
     this.alb = alb;
 
     // Create Distribution
@@ -1093,9 +1093,9 @@ export class Service extends Construct implements SSTConstruct {
     const {
       minContainers,
       maxContainers,
-      cpuUtilization = 70,
-      memoryUtilization = 70,
-      requestsPerContainer = 500,
+      cpuUtilization,
+      memoryUtilization,
+      requestsPerContainer,
     } = this.props.scaling ?? {};
 
     const scaling = service.autoScaleTaskCount({
@@ -1104,24 +1104,24 @@ export class Service extends Construct implements SSTConstruct {
     });
     if (cpuUtilization !== false) {
       scaling.scaleOnCpuUtilization("CpuScaling", {
-        targetUtilizationPercent: cpuUtilization,
+        targetUtilizationPercent: cpuUtilization ?? 70,
         scaleOutCooldown: CdkDuration.seconds(300),
       });
     }
     if (memoryUtilization !== false) {
       scaling.scaleOnMemoryUtilization("MemoryScaling", {
-        targetUtilizationPercent: memoryUtilization,
+        targetUtilizationPercent: memoryUtilization ?? 70,
         scaleOutCooldown: CdkDuration.seconds(300),
       });
     }
     if (target && requestsPerContainer !== false) {
       scaling.scaleOnRequestCount("RequestScaling", {
-        requestsPerTarget: requestsPerContainer,
+        requestsPerTarget: requestsPerContainer ?? 500,
         targetGroup: target,
       });
     }
 
-    return { scaling };
+    return scaling;
   }
 
   private createDistribution(alb?: ApplicationLoadBalancer) {
