@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.45.2
+
+### Patch Changes
+
+- [#23](https://github.com/sst/v2/pull/23) [`eb668c5485a368bc2e69cd5f7e13157df904c4c2`](https://github.com/sst/v2/commit/eb668c5485a368bc2e69cd5f7e13157df904c4c2) Thanks [@hoangnd25](https://github.com/hoangnd25)! - Service: allow default rules to be disabled
+
 ## 2.45.1
 
 ### Patch Changes
