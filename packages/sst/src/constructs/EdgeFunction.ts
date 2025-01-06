@@ -527,8 +527,6 @@ export class EdgeFunction extends Construct {
               ? Runtime.NODEJS_22_X.name
               : runtime === "nodejs20.x"
               ? Runtime.NODEJS_20_X.name
-              : runtime === "nodejs16.x"
-              ? Runtime.NODEJS_16_X.name
               : Runtime.NODEJS_18_X.name,
           MemorySize:
             typeof memorySize === "string"

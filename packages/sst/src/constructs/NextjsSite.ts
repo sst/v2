@@ -467,7 +467,7 @@ export class NextjsSite extends SsrSite {
       code: Code.fromAsset(
         path.join(this.props.path, ".open-next", "revalidation-function")
       ),
-      runtime: Runtime.NODEJS_18_X,
+      runtime: Runtime.NODEJS_20_X,
       timeout: CdkDuration.seconds(30),
       ...cdk?.revalidation,
     });
