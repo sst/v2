@@ -50,6 +50,7 @@ test("default", async () => {
   expect(service.cdk?.distribution?.distributionDomainName).toBeDefined();
   expect(service.cdk?.applicationLoadBalancer).toBeDefined();
   expect(service.cdk?.certificate).toBeUndefined();
+  expect(service.cdk?.scaling).toBeDefined();
   countResources(stack, "AWS::EC2::VPC", 1);
   hasResource(stack, "AWS::EC2::VPC", {
     CidrBlock: "10.0.0.0/16",
@@ -386,6 +387,20 @@ test("scaling.cpuUtilization defined", async () => {
     }),
   });
 });
+test("scaling.cpuUtilization false", async () => {
+  const { service, stack } = await createService({
+    scaling: {
+      cpuUtilization: false,
+    },
+  });
+  countResourcesLike(stack, "AWS::ApplicationAutoScaling::ScalingPolicy", 0, {
+    TargetTrackingScalingPolicyConfiguration: objectLike({
+      PredefinedMetricSpecification: {
+        PredefinedMetricType: "ECSServiceAverageCPUUtilization",
+      },
+    }),
+  });
+});
 
 test("scaling.memoryUtilization undefined", async () => {
   const { service, stack } = await createService();
@@ -413,6 +428,20 @@ test("scaling.memoryUtilization defined", async () => {
     }),
   });
 });
+test("scaling.memoryUtilization false", async () => {
+  const { service, stack } = await createService({
+    scaling: {
+      memoryUtilization: false,
+    },
+  });
+  countResourcesLike(stack, "AWS::ApplicationAutoScaling::ScalingPolicy", 0, {
+    TargetTrackingScalingPolicyConfiguration: objectLike({
+      PredefinedMetricSpecification: {
+        PredefinedMetricType: "ECSServiceAverageMemoryUtilization",
+      },
+    }),
+  });
+});
 
 test("scaling.requestsPerContainer undefined", async () => {
   const { service, stack } = await createService();
@@ -437,6 +466,20 @@ test("scaling.requestsPerContainer defined", async () => {
         PredefinedMetricType: "ALBRequestCountPerTarget",
       }),
       TargetValue: 1000,
+    }),
+  });
+});
+test("scaling.requestsPerContainer false", async () => {
+  const { service, stack } = await createService({
+    scaling: {
+      requestsPerContainer: false,
+    },
+  });
+  countResourcesLike(stack, "AWS::ApplicationAutoScaling::ScalingPolicy", 0, {
+    TargetTrackingScalingPolicyConfiguration: objectLike({
+      PredefinedMetricSpecification: objectLike({
+        PredefinedMetricType: "ALBRequestCountPerTarget",
+      }),
     }),
   });
 });
@@ -581,6 +624,7 @@ test("cdk.cloudfrontDistribution is false", async () => {
   expect(service.cdk?.fargateService).toBeDefined();
   expect(service.cdk?.taskDefinition).toBeDefined();
   expect(service.cdk?.distribution).toBeUndefined();
+  expect(service.cdk?.scaling).toBeDefined();
 });
 test("cdk.cloudfrontDistribution is props", async () => {
   const { stack, service } = await createService({
@@ -615,6 +659,7 @@ test("cdk.applicationLoadBalancer is false", async () => {
   expect(service.cdk?.taskDefinition).toBeDefined();
   expect(service.cdk?.distribution).toBeUndefined();
   expect(service.cdk?.applicationLoadBalancer).toBeUndefined();
+  expect(service.cdk?.scaling).toBeDefined();
 });
 test("cdk.applicationLoadBalancer is props", async () => {
   const { stack, service } = await createService({
