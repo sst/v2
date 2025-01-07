@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.46.0
+
+### Minor Changes
+
+- [#26](https://github.com/sst/v2/pull/26) [`58943da796ba1237dc2779ccf1aaafcc5e651063`](https://github.com/sst/v2/commit/58943da796ba1237dc2779ccf1aaafcc5e651063) Thanks [@dignat](https://github.com/dignat)! - Update default Function runtime to Node.js 20
+
 ## 2.45.2
 
 ### Patch Changes
