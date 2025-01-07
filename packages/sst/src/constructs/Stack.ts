@@ -236,7 +236,7 @@ export class Stack extends CDKStack {
           this.stackName + fs.readFileSync(dir + "/index.mjs").toString(),
       }),
       handler: "index.handler",
-      runtime: lambda.Runtime.NODEJS_18_X,
+      runtime: lambda.Runtime.NODEJS_20_X,
       timeout: CDKDuration.seconds(900),
       memorySize: 1024,
     });

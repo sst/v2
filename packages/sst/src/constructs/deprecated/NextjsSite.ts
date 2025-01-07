@@ -1496,9 +1496,6 @@ export class NextjsSite extends Construct implements SSTConstruct {
     if (runtime === "nodejs20.x") {
       return lambda.Runtime.NODEJS_20_X;
     }
-    if (runtime === "nodejs16.x") {
-      return lambda.Runtime.NODEJS_16_X;
-    }
     return lambda.Runtime.NODEJS_18_X;
   }
 }

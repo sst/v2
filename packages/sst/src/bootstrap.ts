@@ -264,8 +264,8 @@ export async function bootstrapSST(cdkBucket: string) {
     ),
     handler: "index.handler",
     runtime: region?.startsWith("us-gov-")
-      ? Runtime.NODEJS_18_X
-      : Runtime.NODEJS_18_X,
+      ? Runtime.NODEJS_20_X
+      : Runtime.NODEJS_20_X,
     environment: {
       BUCKET_NAME: bucket.bucketName,
     },

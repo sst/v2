@@ -694,7 +694,7 @@ export class Job extends Construct implements SSTConstruct {
     return new CdkFunction(this, "Manager", {
       code: Code.fromAsset(path.join(__dirname, "../support/job-manager/")),
       handler: "index.handler",
-      runtime: Runtime.NODEJS_18_X,
+      runtime: Runtime.NODEJS_20_X,
       timeout: CdkDuration.seconds(10),
       memorySize: 1024,
       environment: {

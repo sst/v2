@@ -772,7 +772,7 @@ export abstract class SsrSite extends Construct implements SSTConstruct {
         code: Code.fromAsset(
           plan.warmer?.function ?? path.join(__dirname, "../support/ssr-warmer")
         ),
-        runtime: Runtime.NODEJS_18_X,
+        runtime: Runtime.NODEJS_20_X,
         handler: "index.handler",
         timeout: CdkDuration.minutes(15),
         memorySize: 128,
