@@ -150,7 +150,13 @@ export interface JobProps {
    * })
    *```
    */
-  runtime?: "nodejs" | "nodejs16.x" | "nodejs18.x" | "nodejs20.x" | "nodejs22.x" | "container";
+  runtime?:
+    | "nodejs"
+    | "nodejs16.x"
+    | "nodejs18.x"
+    | "nodejs20.x"
+    | "nodejs22.x"
+    | "container";
   /**
    * For "nodejs" runtime, point to the entry point and handler function.
    * Of the format: `/path/to/file.function`.
@@ -694,7 +700,7 @@ export class Job extends Construct implements SSTConstruct {
     return new CdkFunction(this, "Manager", {
       code: Code.fromAsset(path.join(__dirname, "../support/job-manager/")),
       handler: "index.handler",
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_22_X,
       timeout: CdkDuration.seconds(10),
       memorySize: 1024,
       environment: {

@@ -450,7 +450,7 @@ export class EdgeFunction extends Construct {
     const provider = new CdkFunction(stack, providerId, {
       code: Code.fromAsset(path.join(__dirname, "../support/edge-function")),
       handler: "s3-bucket.handler",
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_22_X,
       timeout: CdkDuration.minutes(15),
       memorySize: 1024,
       initialPolicy: [
@@ -492,7 +492,7 @@ export class EdgeFunction extends Construct {
       provider = new CdkFunction(stack, providerId, {
         code: Code.fromAsset(path.join(__dirname, "../support/edge-function")),
         handler: "edge-lambda.handler",
-        runtime: Runtime.NODEJS_20_X,
+        runtime: Runtime.NODEJS_22_X,
         timeout: CdkDuration.minutes(15),
         memorySize: 1024,
         initialPolicy: [
@@ -563,7 +563,7 @@ export class EdgeFunction extends Construct {
       provider = new CdkFunction(stack, providerId, {
         code: Code.fromAsset(path.join(__dirname, "../support/edge-function")),
         handler: "edge-lambda-version.handler",
-        runtime: Runtime.NODEJS_20_X,
+        runtime: Runtime.NODEJS_22_X,
         timeout: CdkDuration.minutes(15),
         memorySize: 1024,
         initialPolicy: [

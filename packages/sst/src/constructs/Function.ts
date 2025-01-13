@@ -226,12 +226,12 @@ export interface FunctionProps
   handler?: string;
   /**
    * The runtime environment for the function.
-   * @default "nodejs18.x"
+   * @default "nodejs22.x"
    * @example
    * ```js
    * new Function(stack, "Function", {
    *   handler: "function.handler",
-   *   runtime: "nodejs18.x",
+   *   runtime: "nodejs20.x",
    * })
    *```
    */
@@ -878,7 +878,7 @@ export class Function extends CDKFunction implements SSTConstruct {
       .forEach((per) => {
         props = Function.mergeProps(per, props);
       });
-    props.runtime = props.runtime || "nodejs20.x";
+    props.runtime = props.runtime || "nodejs22.x";
     if (props.runtime === "go1.x") useWarning().add("go.deprecated");
 
     // Set defaults
@@ -920,7 +920,7 @@ export class Function extends CDKFunction implements SSTConstruct {
         code: Code.fromInline("export function placeholder() {}"),
         handler: "index.placeholder",
         functionName,
-        runtime: CDKRuntime.NODEJS_20_X,
+        runtime: CDKRuntime.NODEJS_22_X,
         memorySize,
         ephemeralStorageSize: diskSize,
         timeout,
@@ -974,7 +974,7 @@ export class Function extends CDKFunction implements SSTConstruct {
             }
           : {
               description,
-              runtime: CDKRuntime.NODEJS_20_X,
+              runtime: CDKRuntime.NODEJS_22_X,
               code: Code.fromAsset(
                 path.resolve(__dirname, "../support/bridge")
               ),
@@ -1022,13 +1022,13 @@ export class Function extends CDKFunction implements SSTConstruct {
           ? {
               code: Code.fromInline("export function placeholder() {}"),
               handler: "index.placeholder",
-              runtime: CDKRuntime.NODEJS_20_X,
+              runtime: CDKRuntime.NODEJS_22_X,
               layers: undefined,
             }
           : {
               code: Code.fromInline("export function placeholder() {}"),
               handler: "index.placeholder",
-              runtime: CDKRuntime.NODEJS_20_X,
+              runtime: CDKRuntime.NODEJS_22_X,
               layers: Function.buildLayers(scope, id, props),
             }),
         architecture,

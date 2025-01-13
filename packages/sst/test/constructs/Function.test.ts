@@ -270,7 +270,7 @@ test("runtime: container: props", async () => {
         { type: "inline" },
         { type: "local", params: { src: ".", mode: "max" } },
       ],
-      cacheTo: { type: "local", params: { dest: ".", mode: "max"} },
+      cacheTo: { type: "local", params: { dest: ".", mode: "max" } },
     },
   });
   await app.finish();
@@ -2698,7 +2698,7 @@ test("fromDefinition-lambdaFunction", async () => {
       stack,
       "Function",
       new lambda.Function(stack, "Function", {
-        runtime: lambda.Runtime.NODEJS_20_X,
+        runtime: lambda.Runtime.NODEJS_22_X,
         handler: "test/lambda.handler",
         code: lambda.Code.fromAsset("test"),
       }) as Function
