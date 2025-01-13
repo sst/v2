@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.47.0
+
+### Minor Changes
+
+- [`891c49bb0f2b1b5af3a5a6c7050d740b6a37dda1`](https://github.com/sst/v2/commit/891c49bb0f2b1b5af3a5a6c7050d740b6a37dda1) Thanks [@fwang](https://github.com/fwang)! - Update default runtime to Nodejs22.x
+
 ## 2.46.0
 
 ### Minor Changes
