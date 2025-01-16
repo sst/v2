@@ -215,7 +215,7 @@ export interface SsrSiteProps {
   memorySize?: number | Size;
   /**
    * The runtime environment for the SSR function.
-   * @default nodejs18.x
+   * @default nodejs22.x
    * @example
    * ```js
    * runtime: "nodejs20.x",
