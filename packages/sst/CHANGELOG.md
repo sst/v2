@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.47.1
+
+### Patch Changes
+
+- [#34](https://github.com/sst/v2/pull/34) [`56990e5ead8df6099f5f80a89ae9c77f00bc2306`](https://github.com/sst/v2/commit/56990e5ead8df6099f5f80a89ae9c77f00bc2306) Thanks [@leanderiversen](https://github.com/leanderiversen)! - Pin adm-zip at 0.5.14
+
 ## 2.47.0
 
 ### Minor Changes
