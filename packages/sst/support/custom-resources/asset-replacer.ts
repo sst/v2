@@ -86,7 +86,7 @@ async function upload(bucket: string, key: string) {
     new PutObjectCommand({
       Key: key,
       Bucket: bucket,
-      Body: fs.createReadStream(zipPath),
+      Body: fs.readFileSync(zipPath),
     })
   );
 }
