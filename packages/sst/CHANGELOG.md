@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.47.2
+
+### Patch Changes
+
+- [#38](https://github.com/sst/v2/pull/38) [`5996fd109647f49cbd35e6d3736e834450055861`](https://github.com/sst/v2/commit/5996fd109647f49cbd35e6d3736e834450055861) Thanks [@ncrohn](https://github.com/ncrohn)! - Custom Resource runtime update to NODEJS_22_X
+
 ## 2.47.1
 
 ### Patch Changes
