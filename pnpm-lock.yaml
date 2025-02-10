@@ -354,8 +354,8 @@ importers:
         specifier: 9.16.0
         version: 9.16.0
       adm-zip:
-        specifier: ^0.5.10
-        version: 0.5.16
+        specifier: 0.5.14
+        version: 0.5.14
       aws-cdk-lib:
         specifier: 2.171.1
         version: 2.171.1(constructs@10.3.0)
@@ -5011,8 +5011,8 @@ packages:
     resolution: {integrity: sha512-4B/qKCfeE/ODUaAUpSwfzazo5x29WD4r3vXiWsB7I2mSDAihwEqKO+g8GELZUQSSAo5e1XTYh3ZVfLyxBc12nA==}
     engines: {node: '>= 10.0.0'}
 
-  adm-zip@0.5.16:
-    resolution: {integrity: sha512-TGw5yVi4saajsSEgz25grObGHEUaDrniwvA2qwSC060KfqGPdglhvPMA2lPIoxs3PQIItj2iag35fONcQqgUaQ==}
+  adm-zip@0.5.14:
+    resolution: {integrity: sha512-DnyqqifT4Jrcvb8USYjp6FHtBpEIz1mnXu6pTRHZ0RL69LbQYiO+0lDFg5+OKA7U29oWSs3a/i8fhn8ZcceIWg==}
     engines: {node: '>=12.0'}
 
   agent-base@6.0.2:
@@ -20952,7 +20952,7 @@ snapshots:
 
   address@1.2.2: {}
 
-  adm-zip@0.5.16: {}
+  adm-zip@0.5.14: {}
 
   agent-base@6.0.2:
     dependencies:
