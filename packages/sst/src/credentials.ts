@@ -14,7 +14,7 @@ export const useAWSCredentialsProvider = lazy(() => {
   const project = useProject();
   Logger.debug("Using AWS profile", project.config.profile);
   const provider = fromNodeProviderChain({
-    clientConfig: { region: project.config.region },
+    parentClientConfig: { region: project.config.region },
     profile: project.config.profile,
     roleArn: project.config.role,
     mfaCodeProvider: async (serialArn: string) => {
