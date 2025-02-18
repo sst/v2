@@ -1,5 +1,13 @@
 # @serverless-stack/cli2
 
+## 2.47.3
+
+### Patch Changes
+
+- [#46](https://github.com/sst/v2/pull/46) [`7f505017540982fc9a00a339ddd927b3ecaf0559`](https://github.com/sst/v2/commit/7f505017540982fc9a00a339ddd927b3ecaf0559) Thanks [@RyanShendler](https://github.com/RyanShendler)! - Ensure SSO region is not overridden by the client region
+
+- [`5cca5d14cd5fa19fee7f80ca63dee07d2a34b13d`](https://github.com/sst/v2/commit/5cca5d14cd5fa19fee7f80ca63dee07d2a34b13d) Thanks [@fwang](https://github.com/fwang)! - Pin cdk-assets to 3.0.0-rc.143
+
 ## 2.47.2
 
 ### Patch Changes
