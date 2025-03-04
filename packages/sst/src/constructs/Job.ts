@@ -407,8 +407,9 @@ export class Job extends Construct implements SSTConstruct {
       this.addEnvironment(key, value);
     });
 
+    const { cdk, ...rest } = props;
     useFunctions().add(this.node.addr, {
-      ...props,
+      ...rest,
       runtime: this.convertJobRuntimeToFunctionRuntime(),
     });
 
@@ -523,8 +524,9 @@ export class Job extends Construct implements SSTConstruct {
     // Note: make the invoker function the same ID as the Job
     //       construct so users can identify the invoker function
     //       in the Console.
+    const { cdk, ...rest } = this.props;
     return new Function(this, this.node.id, {
-      ...this.props,
+      ...rest,
       runtime: this.convertJobRuntimeToFunctionRuntime(),
       memorySize: 1024,
       timeout: "10 seconds",
