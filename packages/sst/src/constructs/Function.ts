@@ -78,6 +78,7 @@ const supportedRuntimes = {
   "python3.10": CDKRuntime.PYTHON_3_10,
   "python3.11": CDKRuntime.PYTHON_3_11,
   "python3.12": CDKRuntime.PYTHON_3_12,
+  "python3.13": CDKRuntime.PYTHON_3_13,
   "dotnetcore3.1": CDKRuntime.DOTNET_CORE_3_1,
   dotnet6: CDKRuntime.DOTNET_6,
   dotnet8: CDKRuntime.DOTNET_8,
@@ -431,6 +432,15 @@ export interface FunctionProps
    * @internal
    */
   _doNotAllowOthersToBind?: boolean;
+  /**
+   * Specify cdk-lib settings explicitly.
+   */
+  cdk?: {
+    /**
+     * Use cdk-lib runtime instead of the SST list of runtimes.
+     */
+    runtime?: CDKRuntime;
+  };
 }
 
 export interface FunctionNameProps {
@@ -1128,6 +1138,7 @@ export class Function extends CDKFunction implements SSTConstruct {
         // Update runtime
         // @ts-ignore - override "runtime" private property
         this.runtime =
+          props.cdk?.runtime ||
           supportedRuntimes[props.runtime as keyof typeof supportedRuntimes];
         cfnFunction.runtime = this.runtime.toString();
         if (

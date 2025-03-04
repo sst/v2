@@ -18,6 +18,7 @@ const RUNTIME_MAP: Record<string, Runtime> = {
   "python3.10": Runtime.PYTHON_3_10,
   "python3.11": Runtime.PYTHON_3_11,
   "python3.12": Runtime.PYTHON_3_12,
+  "python3.13": Runtime.PYTHON_3_13,
 };
 
 export const usePythonHandler = (): RuntimeHandler => {
@@ -103,7 +104,7 @@ export const usePythonHandler = (): RuntimeHandler => {
         bundle({
           installCommands: input.props.python?.installCommands,
           entry: src,
-          runtime: RUNTIME_MAP[input.props.runtime!],
+          runtime: input.props.cdk?.runtime || RUNTIME_MAP[input.props.runtime!],
           architecture: input.props.architecture,
           outputPathSuffix: ".",
           out: input.out,
