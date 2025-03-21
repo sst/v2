@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.48.1
+
+### Patch Changes
+
+- [#52](https://github.com/sst/v2/pull/52) [`6e669ee05c29f96dbeb2fa0df72d389545f5c270`](https://github.com/sst/v2/commit/6e669ee05c29f96dbeb2fa0df72d389545f5c270) Thanks [@jglien](https://github.com/jglien)! - Function: Python 3.13 runtime
+
 ## 2.48.0
 
 ### Minor Changes
