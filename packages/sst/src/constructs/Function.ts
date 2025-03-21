@@ -432,15 +432,6 @@ export interface FunctionProps
    * @internal
    */
   _doNotAllowOthersToBind?: boolean;
-  /**
-   * Specify cdk-lib settings explicitly.
-   */
-  cdk?: {
-    /**
-     * Use cdk-lib runtime instead of the SST list of runtimes.
-     */
-    runtime?: CDKRuntime;
-  };
 }
 
 export interface FunctionNameProps {
@@ -1138,7 +1129,6 @@ export class Function extends CDKFunction implements SSTConstruct {
         // Update runtime
         // @ts-ignore - override "runtime" private property
         this.runtime =
-          props.cdk?.runtime ||
           supportedRuntimes[props.runtime as keyof typeof supportedRuntimes];
         cfnFunction.runtime = this.runtime.toString();
         if (

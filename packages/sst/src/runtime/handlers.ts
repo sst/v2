@@ -105,8 +105,7 @@ export const useRuntimeHandlers = lazy(() => {
             type: "error" as const,
             errors: [`Function with ID "${functionID}" not found`],
           };
-        const runtime = func.cdk?.runtime?.toString() || func.runtime!;
-        const handler = result.for(runtime);
+        const handler = result.for(func.runtime!);
         const out = path.join(project.paths.artifacts, functionID);
         await fs.rm(out, { recursive: true, force: true });
         await fs.mkdir(out, { recursive: true });

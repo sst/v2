@@ -104,7 +104,7 @@ export const usePythonHandler = (): RuntimeHandler => {
         bundle({
           installCommands: input.props.python?.installCommands,
           entry: src,
-          runtime: input.props.cdk?.runtime || RUNTIME_MAP[input.props.runtime!],
+          runtime: RUNTIME_MAP[input.props.runtime!],
           architecture: input.props.architecture,
           outputPathSuffix: ".",
           out: input.out,
