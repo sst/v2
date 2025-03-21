@@ -18,6 +18,7 @@ const RUNTIME_MAP: Record<string, Runtime> = {
   "python3.10": Runtime.PYTHON_3_10,
   "python3.11": Runtime.PYTHON_3_11,
   "python3.12": Runtime.PYTHON_3_12,
+  "python3.13": Runtime.PYTHON_3_13,
 };
 
 export const usePythonHandler = (): RuntimeHandler => {

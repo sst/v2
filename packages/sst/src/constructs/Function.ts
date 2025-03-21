@@ -78,6 +78,7 @@ const supportedRuntimes = {
   "python3.10": CDKRuntime.PYTHON_3_10,
   "python3.11": CDKRuntime.PYTHON_3_11,
   "python3.12": CDKRuntime.PYTHON_3_12,
+  "python3.13": CDKRuntime.PYTHON_3_13,
   "dotnetcore3.1": CDKRuntime.DOTNET_CORE_3_1,
   dotnet6: CDKRuntime.DOTNET_6,
   dotnet8: CDKRuntime.DOTNET_8,
