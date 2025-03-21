@@ -23,7 +23,9 @@ export async function synth(opts: SynthOptions) {
   Logger.debug("Synthesizing stacks...");
   const { App } = await import("../constructs/App.js");
   const cxapi = await import("@aws-cdk/cx-api");
-  const { Configuration } = await import("sst-aws-cdk/lib/settings.js");
+  const { Configuration } = await import(
+    "sst-aws-cdk/lib/cli/user-configuration.js"
+  );
   const project = useProject();
 
   const cwd = process.cwd();

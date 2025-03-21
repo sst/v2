@@ -8,21 +8,10 @@ import type {
   Tag,
 } from "@aws-sdk/client-cloudformation";
 import * as uuid from "uuid";
-import type {
-  SDK,
-  SdkProvider,
-  ICloudFormationClient,
-} from "sst-aws-cdk/lib/api/aws-auth/index.js";
-import type { EnvironmentResources } from "sst-aws-cdk/lib/api/environment-resources.js";
-import { addMetadataAssetsToManifest } from "sst-aws-cdk/lib/assets.js";
-import { debug, print, warning } from "sst-aws-cdk/lib/logging.js";
-import { CfnEvaluationException } from "sst-aws-cdk/lib/api/evaluate-cloudformation-template.js";
-import {
-  HotswapMode,
-  HotswapPropertyOverrides,
-  ICON,
-} from "sst-aws-cdk/lib/api/hotswap/common.js";
-import { tryHotswapDeployment } from "sst-aws-cdk/lib/api/hotswap-deployments.js";
+import { AssetManifestBuilder } from "sst-aws-cdk/lib/api/deployments/asset-manifest-builder.js";
+import { publishAssets } from "sst-aws-cdk/lib/api/deployments/asset-publishing.js";
+import { addMetadataAssetsToManifest } from "sst-aws-cdk/lib/api/deployments/assets.js";
+import { determineAllowCrossAccountAssetPublishing } from "sst-aws-cdk/lib/api/deployments/checks.js";
 import {
   changeSetHasNoChanges,
   CloudFormationStack,
@@ -33,57 +22,41 @@ import {
   ParameterValues,
   ParameterChanges,
   ResourcesToImport,
-} from "sst-aws-cdk/lib/api/util/cloudformation.js";
+} from "sst-aws-cdk/lib/api/deployments/cloudformation.js";
+import {
+  ChangeSetDeploymentMethod,
+  DeploymentMethod,
+} from "sst-aws-cdk/lib/api/deployments/deployment-method.js";
+import {
+  DeployStackResult,
+  SuccessfulDeployStackResult,
+} from "sst-aws-cdk/lib/api/deployments/deployment-result.js";
+import { tryHotswapDeployment } from "sst-aws-cdk/lib/api/deployments/hotswap-deployments.js";
+import { debug, info, warning } from "sst-aws-cdk/lib/logging.js";
+import { ToolkitError } from "sst-aws-cdk/lib/toolkit/error.js";
+import { formatErrorMessage } from "sst-aws-cdk/lib/util/error.js";
+import type {
+  SDK,
+  SdkProvider,
+  ICloudFormationClient,
+} from "sst-aws-cdk/lib/api/aws-auth/index.js";
+import type { EnvironmentResources } from "sst-aws-cdk/lib/api/environment-resources.js";
+import { CfnEvaluationException } from "sst-aws-cdk/lib/api/evaluate-cloudformation-template.js";
+import {
+  HotswapMode,
+  HotswapPropertyOverrides,
+  ICON,
+} from "sst-aws-cdk/lib/api/hotswap/common.js";
 import {
   StackActivityMonitor,
   type StackActivityProgress,
 } from "sst-aws-cdk/lib/api/util/cloudformation/stack-activity-monitor.js";
+import { StringWithoutPlaceholders } from "sst-aws-cdk/lib/api/util/placeholders.js";
 import {
   type TemplateBodyParameter,
   makeBodyParameter,
 } from "sst-aws-cdk/lib/api/util/template-body-parameter.js";
-import { AssetManifestBuilder } from "sst-aws-cdk/lib/util/asset-manifest-builder.js";
-import { determineAllowCrossAccountAssetPublishing } from "sst-aws-cdk/lib/api/util/checks.js";
-import { publishAssets } from "sst-aws-cdk/lib/util/asset-publishing.js";
-import { StringWithoutPlaceholders } from "sst-aws-cdk/lib/api/util/placeholders.js";
-import { blue } from "colorette";
 import { callWithRetry } from "./util.js";
-
-export type DeployStackResult =
-  | SuccessfulDeployStackResult
-  | NeedRollbackFirstDeployStackResult
-  | ReplacementRequiresNoRollbackStackResult;
-
-/** Successfully deployed a stack */
-export interface SuccessfulDeployStackResult {
-  readonly type: "did-deploy-stack";
-  readonly noOp: boolean;
-  readonly outputs: { [name: string]: string };
-  readonly stackArn: string;
-}
-
-/** The stack is currently in a failpaused state, and needs to be rolled back before the deployment */
-export interface NeedRollbackFirstDeployStackResult {
-  readonly type: "failpaused-need-rollback-first";
-  readonly reason: "not-norollback" | "replacement";
-}
-
-/** The upcoming change has a replacement, which requires deploying without --no-rollback */
-export interface ReplacementRequiresNoRollbackStackResult {
-  readonly type: "replacement-requires-norollback";
-}
-
-export function assertIsSuccessfulDeployStackResult(
-  x: DeployStackResult
-): asserts x is SuccessfulDeployStackResult {
-  if (x.type !== "did-deploy-stack") {
-    throw new Error(
-      `Unexpected deployStack result. This should not happen: ${JSON.stringify(
-        x
-      )}. If you are seeing this error, please report it at https://github.com/aws/aws-cdk/issues/new/choose.`
-    );
-  }
-}
 
 export interface DeployStackOptions {
   /**
@@ -272,31 +245,6 @@ export interface DeployStackOptions {
   readonly assetParallelism?: boolean;
 }
 
-export type DeploymentMethod =
-  | DirectDeploymentMethod
-  | ChangeSetDeploymentMethod;
-
-export interface DirectDeploymentMethod {
-  readonly method: "direct";
-}
-
-export interface ChangeSetDeploymentMethod {
-  readonly method: "change-set";
-
-  /**
-   * Whether to execute the changeset or leave it in review.
-   *
-   * @default true
-   */
-  readonly execute?: boolean;
-
-  /**
-   * Optional name to use for the CloudFormation change set.
-   * If not provided, a name will be generated automatically.
-   */
-  readonly changeSetName?: string;
-}
-
 export async function deployStack(
   options: DeployStackOptions
 ): Promise<DeployStackResult | undefined> {
@@ -318,7 +266,7 @@ export async function deployStack(
     await cfn.deleteStack({ StackName: deployName });
     const deletedStack = await waitForStackDelete(cfn, deployName);
     if (deletedStack && deletedStack.stackStatus.name !== "DELETE_COMPLETE") {
-      throw new Error(
+      throw new ToolkitError(
         `Failed deleting stack ${deployName} that had previously failed creation (current state: ${deletedStack.stackStatus})`
       );
     }
@@ -416,7 +364,7 @@ export async function deployStack(
       if (hotswapDeploymentResult) {
         return hotswapDeploymentResult;
       }
-      print(
+      info(
         "Could not perform a hotswap deployment, as the stack %s contains non-Asset changes",
         stackArtifact.displayName
       );
@@ -424,13 +372,13 @@ export async function deployStack(
       if (!(e instanceof CfnEvaluationException)) {
         throw e;
       }
-      print(
+      info(
         "Could not perform a hotswap deployment, because the CloudFormation template could not be resolved: %s",
-        e.message
+        formatErrorMessage(e)
       );
     }
     if (hotswapMode === HotswapMode.FALL_BACK) {
-      print("Falling back to doing a full deployment");
+      info("Falling back to doing a full deployment");
       options.sdk.appendCustomUserAgent("cdk-hotswap/fallback");
     } else {
       return {
@@ -496,7 +444,9 @@ class FullCloudFormationDeployment {
       deploymentMethod.method === "direct" &&
       this.options.resourcesToImport
     ) {
-      throw new Error("Importing resources requires a changeset deployment");
+      throw new ToolkitError(
+        "Importing resources requires a changeset deployment"
+      );
     }
 
     switch (deploymentMethod.method) {
@@ -514,9 +464,12 @@ class FullCloudFormationDeployment {
     const changeSetName =
       deploymentMethod.changeSetName ?? "cdk-deploy-change-set";
     const execute = deploymentMethod.execute ?? true;
+    const importExistingResources =
+      deploymentMethod.importExistingResources ?? false;
     const changeSetDescription = await this.createChangeSet(
       changeSetName,
-      execute
+      execute,
+      importExistingResources
     );
     await this.updateTerminationProtection();
 
@@ -551,7 +504,7 @@ class FullCloudFormationDeployment {
     }
 
     if (!execute) {
-      print(
+      info(
         "Changeset %s created and waiting in review for manual execution (--no-execute)",
         changeSetDescription.ChangeSetId
       );
@@ -569,22 +522,31 @@ class FullCloudFormationDeployment {
       this.cloudFormationStack.stackStatus.isRollbackable;
     const rollback = this.options.rollback ?? true;
     if (isPausedFailState && replacement) {
-      return { type: "failpaused-need-rollback-first", reason: "replacement" };
+      return {
+        type: "failpaused-need-rollback-first",
+        reason: "replacement",
+        status: this.cloudFormationStack.stackStatus.name,
+      };
     }
-    if (isPausedFailState && !rollback) {
+    if (isPausedFailState && rollback) {
       return {
         type: "failpaused-need-rollback-first",
         reason: "not-norollback",
+        status: this.cloudFormationStack.stackStatus.name,
       };
     }
     if (!rollback && replacement) {
-      return { type: "replacement-requires-norollback" };
+      return { type: "replacement-requires-rollback" };
     }
 
     return this.executeChangeSet(changeSetDescription);
   }
 
-  private async createChangeSet(changeSetName: string, willExecute: boolean) {
+  private async createChangeSet(
+    changeSetName: string,
+    willExecute: boolean,
+    importExistingResources: boolean
+  ) {
     await this.cleanupOldChangeset(changeSetName);
 
     debug(
@@ -601,6 +563,7 @@ class FullCloudFormationDeployment {
       ResourcesToImport: this.options.resourcesToImport,
       Description: `CDK Changeset for execution ${this.uuid}`,
       ClientToken: `create${this.uuid}`,
+      ImportExistingResources: importExistingResources,
       ...this.commonPrepareOptions(),
     });
 
@@ -755,13 +718,15 @@ class FullCloudFormationDeployment {
 
       // This shouldn't really happen, but catch it anyway. You never know.
       if (!successStack) {
-        throw new Error(
+        throw new ToolkitError(
           "Stack deploy failed (the stack disappeared while we were deploying it)"
         );
       }
       finalState = successStack;
     } catch (e: any) {
-      throw new Error(suffixWithErrors(e.message /*, monitor?.errors*/));
+      throw new ToolkitError(
+        suffixWithErrors(formatErrorMessage(e) /*, monitor?.errors*/)
+      );
     } finally {
       // await monitor?.stop();
     }
@@ -849,12 +814,14 @@ export async function destroyStack(options: DestroyStackOptions) {
       destroyedStack &&
       destroyedStack.stackStatus.name !== "DELETE_COMPLETE"
     ) {
-      throw new Error(
+      throw new ToolkitError(
         `Failed to destroy ${deployName}: ${destroyedStack.stackStatus}`
       );
     }
   } catch (e: any) {
-    throw new Error(suffixWithErrors(e.message /* , monitor?.errors */));
+    throw new ToolkitError(
+      suffixWithErrors(formatErrorMessage(e) /* , monitor?.errors */)
+    );
   } finally {
     /*
     if (monitor) {

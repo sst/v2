@@ -53,7 +53,8 @@ jobs:
                 )
               )
             ) |
-            .name = "sst-aws-cdk"
+            .name = "sst-aws-cdk" |
+            del(.exports)
           ' $PACKAGE_JSON > tmp.json
           mv tmp.json $PACKAGE_JSON
           cd package

@@ -3,30 +3,12 @@
 import { randomUUID } from "crypto";
 import * as cxapi from "@aws-cdk/cx-api";
 import * as cdk_assets from "cdk-assets";
-import { AssetManifest, IManifestEntry } from "cdk-assets";
-import type { Tag } from "sst-aws-cdk/lib/cdk-toolkit.js";
-import { debug, warning } from "sst-aws-cdk/lib/logging.js";
-import { EnvironmentAccess } from "sst-aws-cdk/lib/api/environment-access.js";
-import type { SdkProvider } from "sst-aws-cdk/lib/api/aws-auth/sdk-provider.js";
+import { AssetManifestBuilder } from "sst-aws-cdk/lib/api/deployments/asset-manifest-builder.js";
 import {
-  type DeploymentMethod,
-  deployStack,
-  DeployStackResult,
-  destroyStack,
-} from "./deploy-stack.js";
-import { type EnvironmentResources } from "sst-aws-cdk/lib/api/environment-resources.js";
-import { EnvironmentResourcesRegistry } from "sst-aws-cdk/lib/api/environment-resources.js";
-import {
-  HotswapMode,
-  HotswapPropertyOverrides,
-} from "sst-aws-cdk/lib/api/hotswap/common.js";
-import {
-  loadCurrentTemplateWithNestedStacks,
-  loadCurrentTemplate,
-  type RootTemplateWithNestedStacks,
-} from "sst-aws-cdk/lib/api/nested-stack-helpers.js";
-import { DEFAULT_TOOLKIT_STACK_NAME } from "sst-aws-cdk/lib/api/toolkit-info.js";
-import { determineAllowCrossAccountAssetPublishing } from "sst-aws-cdk/lib/api/util/checks.js";
+  EVENT_TO_LOGGER,
+  PublishingAws,
+} from "sst-aws-cdk/lib/api/deployments/asset-publishing.js";
+import { determineAllowCrossAccountAssetPublishing } from "sst-aws-cdk/lib/api/deployments/checks.js";
 import {
   CloudFormationStack,
   type ResourceIdentifierSummaries,
@@ -34,7 +16,27 @@ import {
   stabilizeStack,
   Template,
   uploadStackTemplateAssets,
-} from "sst-aws-cdk/lib/api/util/cloudformation.js";
+} from "sst-aws-cdk/lib/api/deployments/cloudformation.js";
+import { deployStack, destroyStack } from "./deploy-stack.js";
+import { DeploymentMethod } from "sst-aws-cdk/lib/api/deployments/deployment-method.js";
+import { DeployStackResult } from "sst-aws-cdk/lib/api/deployments/deployment-result.js";
+import {
+  loadCurrentTemplate,
+  loadCurrentTemplateWithNestedStacks,
+  type RootTemplateWithNestedStacks,
+} from "sst-aws-cdk/lib/api/deployments/nested-stack-helpers.js";
+import { debug, warning } from "sst-aws-cdk/lib/logging.js";
+import { ToolkitError } from "sst-aws-cdk/lib/toolkit/error.js";
+import { formatErrorMessage } from "sst-aws-cdk/lib/util/error.js";
+import type { SdkProvider } from "sst-aws-cdk/lib/api/aws-auth/sdk-provider.js";
+import { EnvironmentAccess } from "sst-aws-cdk/lib/api/environment-access.js";
+import { type EnvironmentResources } from "sst-aws-cdk/lib/api/environment-resources.js";
+import {
+  HotswapMode,
+  HotswapPropertyOverrides,
+} from "sst-aws-cdk/lib/api/hotswap/common.js";
+import type { Tag } from "sst-aws-cdk/lib/api/tags.js";
+import { DEFAULT_TOOLKIT_STACK_NAME } from "sst-aws-cdk/lib/api/toolkit-info.js";
 import {
   StackActivityMonitor,
   StackActivityProgress,
@@ -42,16 +44,7 @@ import {
 import { StackEventPoller } from "sst-aws-cdk/lib/api/util/cloudformation/stack-event-poller.js";
 import { RollbackChoice } from "sst-aws-cdk/lib/api/util/cloudformation/stack-status.js";
 import { makeBodyParameter } from "sst-aws-cdk/lib/api/util/template-body-parameter.js";
-import { AssetManifestBuilder } from "sst-aws-cdk/lib/util/asset-manifest-builder.js";
-import {
-  buildAssets,
-  type BuildAssetsOptions,
-  EVENT_TO_LOGGER,
-  publishAssets,
-  type PublishAssetsOptions,
-  PublishingAws,
-} from "sst-aws-cdk/lib/util/asset-publishing.js";
-import { callWithRetry } from "./util.js";
+import { AssetManifest } from "cdk-assets";
 
 const BOOTSTRAP_STACK_VERSION_FOR_ROLLBACK = 23;
 
@@ -309,22 +302,12 @@ interface AssetOptions {
 
 export interface BuildStackAssetsOptions extends AssetOptions {
   /**
-   * Options to pass on to `buildAsests()` function
-   */
-  readonly buildOptions?: BuildAssetsOptions;
-
-  /**
    * Stack name this asset is for
    */
   readonly stackName?: string;
 }
 
 interface PublishStackAssetsOptions extends AssetOptions {
-  /**
-   * Options to pass on to `publishAsests()` function
-   */
-  readonly publishOptions?: Omit<PublishAssetsOptions, "buildAssets">;
-
   /**
    * Stack name this asset is for
    */
@@ -381,7 +364,7 @@ export class Deployments {
   private readonly deployStackSdkProvider: SdkProvider;
 
   private readonly publisherCache = new Map<
-    AssetManifest,
+    cdk_assets.AssetManifest,
     cdk_assets.AssetPublishing
   >();
 
@@ -479,7 +462,7 @@ export class Deployments {
     let deploymentMethod = options.deploymentMethod;
     if (options.changeSetName || options.execute !== undefined) {
       if (deploymentMethod) {
-        throw new Error(
+        throw new ToolkitError(
           "You cannot supply both 'deploymentMethod' and 'changeSetName/execute'. Supply one or the other."
         );
       }
@@ -516,12 +499,7 @@ export class Deployments {
         manifest,
         this.deployStackSdkProvider,
         env.resolvedEnvironment,
-        {
-          buildAssets: true,
-          allowCrossAccount: true,
-          quiet: options.quiet,
-          parallel: options.assetParallelism,
-        }
+        { quiet: options.quiet }
       );
     }
 
@@ -559,7 +537,7 @@ export class Deployments {
   ): Promise<RollbackStackResult> {
     let resourcesToSkip: string[] = options.orphanLogicalIds ?? [];
     if (options.force && resourcesToSkip.length > 0) {
-      throw new Error("Cannot combine --force with --orphan");
+      throw new ToolkitError("Cannot combine --force with --orphan");
     }
 
     const env = await this.envs.accessStackForMutableStackOperations(
@@ -651,7 +629,7 @@ export class Deployments {
           return { notInRollbackableState: true };
 
         default:
-          throw new Error(
+          throw new ToolkitError(
             `Unexpected rollback choice: ${cloudFormationStack.stackStatus.rollbackChoice}`
           );
       }
@@ -674,7 +652,7 @@ export class Deployments {
 
         // This shouldn't really happen, but catch it anyway. You never know.
         if (!successStack) {
-          throw new Error(
+          throw new ToolkitError(
             "Stack deploy failed (the stack disappeared while we were rolling it back)"
           );
         }
@@ -685,7 +663,10 @@ export class Deployments {
           stackErrorMessage = errors;
         }
       } catch (e: any) {
-        stackErrorMessage = suffixWithErrors(e.message, monitor?.errors);
+        stackErrorMessage = suffixWithErrors(
+          formatErrorMessage(e),
+          monitor?.errors
+        );
       } finally {
         await monitor?.stop();
       }
@@ -702,11 +683,11 @@ export class Deployments {
         // Do another loop-de-loop
         continue;
       }
-      throw new Error(
+      throw new ToolkitError(
         `${stackErrorMessage} (fix problem and retry, or orphan these resources using --orphan or --force)`
       );
     }
-    throw new Error(
+    throw new ToolkitError(
       "Rollback did not finish after a large number of iterations; stopping because it looks like we're not making progress anymore. You can retry if rollback was progressing as expected."
     );
   }
@@ -745,67 +726,6 @@ export class Deployments {
     return stack.exists;
   }
 
-  public async prepareAndValidateAssets(
-    asset: cxapi.AssetManifestArtifact,
-    options: AssetOptions
-  ) {
-    const env = await this.envs.accessStackForMutableStackOperations(
-      options.stack
-    );
-    await this.validateBootstrapStackVersion(
-      options.stack.stackName,
-      asset.requiresBootstrapStackVersion,
-      asset.bootstrapStackVersionSsmParameter,
-      env.resources
-    );
-
-    const manifest = AssetManifest.fromFile(asset.file);
-
-    return { manifest, stackEnv: env.resolvedEnvironment };
-  }
-
-  /**
-   * Build all assets in a manifest
-   *
-   * @deprecated Use `buildSingleAsset` instead
-   */
-  public async buildAssets(
-    asset: cxapi.AssetManifestArtifact,
-    options: BuildStackAssetsOptions
-  ) {
-    const { manifest, stackEnv } = await this.prepareAndValidateAssets(
-      asset,
-      options
-    );
-    await buildAssets(
-      manifest,
-      this.assetSdkProvider,
-      stackEnv,
-      options.buildOptions
-    );
-  }
-
-  /**
-   * Publish all assets in a manifest
-   *
-   * @deprecated Use `publishSingleAsset` instead
-   */
-  public async publishAssets(
-    asset: cxapi.AssetManifestArtifact,
-    options: PublishStackAssetsOptions
-  ) {
-    const { manifest, stackEnv } = await this.prepareAndValidateAssets(
-      asset,
-      options
-    );
-    await publishAssets(manifest, this.assetSdkProvider, stackEnv, {
-      ...options.publishOptions,
-      allowCrossAccount: await this.allowCrossAccountAssetPublishingForEnv(
-        options.stack
-      ),
-    });
-  }
-
   /**
    * Build a single asset from an asset manifest
    *
@@ -816,8 +736,8 @@ export class Deployments {
   // eslint-disable-next-line max-len
   public async buildSingleAsset(
     assetArtifact: cxapi.AssetManifestArtifact | "no-version-validation",
-    assetManifest: AssetManifest,
-    asset: IManifestEntry,
+    assetManifest: cdk_assets.AssetManifest,
+    asset: cdk_assets.IManifestEntry,
     options: BuildStackAssetsOptions
   ) {
     if (assetArtifact !== "no-version-validation") {
@@ -847,10 +767,9 @@ export class Deployments {
   /**
    * Publish a single asset from an asset manifest
    */
-  // eslint-disable-next-line max-len
   public async publishSingleAsset(
-    assetManifest: AssetManifest,
-    asset: IManifestEntry,
+    assetManifest: cdk_assets.AssetManifest,
+    asset: cdk_assets.IManifestEntry,
     options: PublishStackAssetsOptions
   ) {
     const stackEnv = await this.envs.resolveStackEnvironment(options.stack);
@@ -861,14 +780,13 @@ export class Deployments {
       stackEnv,
       options.stackName
     );
-    // eslint-disable-next-line no-console
     await publisher.publishEntry(asset, {
       allowCrossAccount: await this.allowCrossAccountAssetPublishingForEnv(
         options.stack
       ),
     });
     if (publisher.hasFailures) {
-      throw new Error(`Failed to publish asset ${asset.id}`);
+      throw new ToolkitError(`Failed to publish asset ${asset.id}`);
     }
   }
 
@@ -890,8 +808,8 @@ export class Deployments {
    * Return whether a single asset has been published already
    */
   public async isSingleAssetPublished(
-    assetManifest: AssetManifest,
-    asset: IManifestEntry,
+    assetManifest: cdk_assets.AssetManifest,
+    asset: cdk_assets.IManifestEntry,
     options: PublishStackAssetsOptions
   ) {
     const stackEnv = await this.envs.resolveStackEnvironment(options.stack);
@@ -920,7 +838,7 @@ export class Deployments {
         bootstrapStackVersionSsmParameter
       );
     } catch (e: any) {
-      throw new Error(`${stackName}: ${e.message}`);
+      throw new ToolkitError(`${stackName}: ${formatErrorMessage(e)}`);
     }
   }
 
@@ -969,4 +887,62 @@ class ParallelSafeAssetProgress implements cdk_assets.IPublishProgressListener {
 
 function suffixWithErrors(msg: string, errors?: string[]) {
   return errors && errors.length > 0 ? `${msg}: ${errors.join(", ")}` : msg;
+}
+
+//////////////////////
+// Manually copied over functions
+//////////////////////
+
+/*
+ * Copy over deprecated `publishAssets` from `lib/api/deployments/asset-publishing.ts`
+ * to be used in `deployments-wrapper.ts`
+ */
+class PublishingProgressListener {
+  constructor() {}
+  onPublishEvent(
+    type: cdk_assets.EventType,
+    event: cdk_assets.IPublishProgress
+  ) {
+    const handler = EVENT_TO_LOGGER[type];
+    handler(`[${event.percentComplete}%] ${type}: ${event.message}`);
+  }
+}
+
+export async function publishAssets(
+  manifest: AssetManifest,
+  sdk: SdkProvider,
+  targetEnv: cxapi.Environment,
+  options: { quiet?: boolean }
+) {
+  // This shouldn't really happen (it's a programming error), but we don't have
+  // the types here to guide us. Do an runtime validation to be super super sure.
+  if (
+    targetEnv.account === undefined ||
+    targetEnv.account === cxapi.UNKNOWN_ACCOUNT ||
+    targetEnv.region === undefined ||
+    targetEnv.account === cxapi.UNKNOWN_REGION
+  ) {
+    throw new ToolkitError(
+      `Asset publishing requires resolved account and region, got ${JSON.stringify(
+        targetEnv
+      )}`
+    );
+  }
+  const publisher = new cdk_assets.AssetPublishing(manifest, {
+    aws: new PublishingAws(sdk, targetEnv),
+    progressListener: options.quiet
+      ? undefined
+      : new PublishingProgressListener(),
+    throwOnError: false,
+    publishInParallel: true,
+    buildAssets: true,
+    publishAssets: true,
+    quiet: options.quiet,
+  });
+  await publisher.publish({ allowCrossAccount: true });
+  if (publisher.hasFailures) {
+    throw new ToolkitError(
+      "Failed to publish one or more assets. See the error messages above for more information."
+    );
+  }
 }
