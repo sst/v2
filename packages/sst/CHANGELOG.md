@@ -1,5 +1,13 @@
 # @serverless-stack/cli2
 
+## 2.48.2
+
+### Patch Changes
+
+- [#33](https://github.com/sst/v2/pull/33) [`330d653d3860e7fe5231220e73b997e48e5a5f1e`](https://github.com/sst/v2/commit/330d653d3860e7fe5231220e73b997e48e5a5f1e) Thanks [@iloewensen](https://github.com/iloewensen)! - Upgrade fast-jwt
+
+- [`c7ab336815e1df20b90394935958109fd13efc1a`](https://github.com/sst/v2/commit/c7ab336815e1df20b90394935958109fd13efc1a) Thanks [@fwang](https://github.com/fwang)! - Allow passing in EventBridgeClient to createEventBuilder
+
 ## 2.48.1
 
 ### Patch Changes
