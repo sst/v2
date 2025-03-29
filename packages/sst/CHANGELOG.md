@@ -1,5 +1,39 @@
 # @serverless-stack/cli2
 
+## 2.48.2
+
+### Patch Changes
+
+- [#33](https://github.com/sst/v2/pull/33) [`330d653d3860e7fe5231220e73b997e48e5a5f1e`](https://github.com/sst/v2/commit/330d653d3860e7fe5231220e73b997e48e5a5f1e) Thanks [@iloewensen](https://github.com/iloewensen)! - Upgrade fast-jwt
+
+- [`c7ab336815e1df20b90394935958109fd13efc1a`](https://github.com/sst/v2/commit/c7ab336815e1df20b90394935958109fd13efc1a) Thanks [@fwang](https://github.com/fwang)! - Allow passing in EventBridgeClient to createEventBuilder
+
+## 2.48.1
+
+### Patch Changes
+
+- [#52](https://github.com/sst/v2/pull/52) [`6e669ee05c29f96dbeb2fa0df72d389545f5c270`](https://github.com/sst/v2/commit/6e669ee05c29f96dbeb2fa0df72d389545f5c270) Thanks [@jglien](https://github.com/jglien)! - Function: Python 3.13 runtime
+
+## 2.48.0
+
+### Minor Changes
+
+- [`53779086a99935b36239e2913d0d65c39c61969a`](https://github.com/sst/v2/commit/53779086a99935b36239e2913d0d65c39c61969a) Thanks [@fwang](https://github.com/fwang)! - Update CDK to v2.179.0
+
+## 2.47.3
+
+### Patch Changes
+
+- [#46](https://github.com/sst/v2/pull/46) [`7f505017540982fc9a00a339ddd927b3ecaf0559`](https://github.com/sst/v2/commit/7f505017540982fc9a00a339ddd927b3ecaf0559) Thanks [@RyanShendler](https://github.com/RyanShendler)! - Ensure SSO region is not overridden by the client region
+
+- [`5cca5d14cd5fa19fee7f80ca63dee07d2a34b13d`](https://github.com/sst/v2/commit/5cca5d14cd5fa19fee7f80ca63dee07d2a34b13d) Thanks [@fwang](https://github.com/fwang)! - Pin cdk-assets to 3.0.0-rc.143
+
+## 2.47.2
+
+### Patch Changes
+
+- [#38](https://github.com/sst/v2/pull/38) [`5996fd109647f49cbd35e6d3736e834450055861`](https://github.com/sst/v2/commit/5996fd109647f49cbd35e6d3736e834450055861) Thanks [@ncrohn](https://github.com/ncrohn)! - Custom Resource runtime update to NODEJS_22_X
+
 ## 2.47.1
 
 ### Patch Changes

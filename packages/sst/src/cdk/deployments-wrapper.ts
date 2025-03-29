@@ -1,20 +1,20 @@
 import * as cxapi from "@aws-cdk/cx-api";
 import { Environment } from "@aws-cdk/cx-api";
+import { AssetManifestBuilder } from "sst-aws-cdk/lib/api/deployments/asset-manifest-builder.js";
 import { AssetManifest } from "cdk-assets";
 import { debug } from "sst-aws-cdk/lib/logging.js";
 import {
   CloudFormationStack,
   TemplateParameters,
   waitForStackDelete,
-} from "sst-aws-cdk/lib/api/util/cloudformation.js";
+} from "sst-aws-cdk/lib/api/deployments/cloudformation.js";
 import { SDK } from "sst-aws-cdk/lib/api/aws-auth/sdk.js";
 import { EnvironmentResources } from "sst-aws-cdk/lib/api/environment-resources.js";
-import { addMetadataAssetsToManifest } from "sst-aws-cdk/lib/assets.js";
-import { publishAssets } from "sst-aws-cdk/lib/util/asset-publishing.js";
+import { addMetadataAssetsToManifest } from "sst-aws-cdk/lib/api/deployments/assets.js";
 import { SdkProvider } from "sst-aws-cdk/lib/api/aws-auth/sdk-provider.js";
-import { AssetManifestBuilder } from "sst-aws-cdk/lib/util/asset-manifest-builder.js";
 import { makeBodyParameter } from "sst-aws-cdk/lib/api/util/template-body-parameter.js";
 import {
+  publishAssets,
   Deployments,
   DeployStackOptions as PublishStackAssetsOptions,
 } from "./deployments.js";
@@ -40,10 +40,7 @@ export async function publishDeployAssets(
   for (const asset of assetArtifacts) {
     const manifest = AssetManifest.fromFile(asset.file);
     await publishAssets(manifest, sdkProvider, resolvedEnvironment, {
-      buildAssets: true,
-      allowCrossAccount: true,
       quiet: options.quiet,
-      parallel: options.assetParallelism,
     });
   }
 
@@ -182,10 +179,7 @@ async function deployStack(options: DeployStackOptions): Promise<any> {
     legacyAssets.toManifest(stackArtifact.assembly.directory),
     options.sdkProvider,
     stackEnv,
-    {
-      parallel: options.assetParallelism,
-      allowCrossAccount: true,
-    }
+    { quiet: options.quiet }
   );
 
   return {
