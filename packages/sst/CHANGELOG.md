@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.48.3
+
+### Patch Changes
+
+- [`69854018879b56941ddf745cde04dd0693090e5b`](https://github.com/sst/v2/commit/69854018879b56941ddf745cde04dd0693090e5b) Thanks [@fwang](https://github.com/fwang)! - Nextjs: default OpenNext version to 3.5.4 with security patch
+
 ## 2.48.2
 
 ### Patch Changes
