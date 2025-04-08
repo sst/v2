@@ -67,6 +67,7 @@ export async function load(input: string, shallow?: boolean) {
         "aws-cdk-lib",
         "sst",
         // workspace dependencies must be internal
+        // because they haven't been built yet
         ...Object.keys(exceptWorkspaceDependencies({
           ...pkg.devDependencies,
           ...pkg.dependencies,
