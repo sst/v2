@@ -26,7 +26,7 @@ declare module "../bus.js" {
 function exceptWorkspaceDependencies(
   deps: Record<string, string>
 ): Record<string, string> {
-  let result = {};
+  let result: Record<string, string> = {};
   for (const key of Object.keys(deps)) {
     let version = deps[key];
     if (!version.startsWith("workspace:")) {
