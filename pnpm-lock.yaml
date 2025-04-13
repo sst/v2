@@ -12719,7 +12719,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.699.0(@aws-sdk/client-sts@3.726.1(aws-crt@1.25.0))(aws-crt@1.25.0)
+      '@aws-sdk/client-sso-oidc': 3.699.0(@aws-sdk/client-sts@3.699.0(aws-crt@1.25.0))(aws-crt@1.25.0)
       '@aws-sdk/client-sts': 3.699.0(aws-crt@1.25.0)
       '@aws-sdk/core': 3.696.0
       '@aws-sdk/credential-provider-node': 3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0(aws-crt@1.25.0))(aws-crt@1.25.0))(@aws-sdk/client-sts@3.699.0(aws-crt@1.25.0))(aws-crt@1.25.0)
@@ -13187,7 +13187,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.699.0(@aws-sdk/client-sts@3.699.0(aws-crt@1.25.0))(aws-crt@1.25.0)
+      '@aws-sdk/client-sso-oidc': 3.699.0(@aws-sdk/client-sts@3.726.1(aws-crt@1.25.0))(aws-crt@1.25.0)
       '@aws-sdk/client-sts': 3.699.0(aws-crt@1.25.0)
       '@aws-sdk/core': 3.696.0
       '@aws-sdk/credential-provider-node': 3.699.0(@aws-sdk/client-sso-oidc@3.699.0(@aws-sdk/client-sts@3.699.0(aws-crt@1.25.0))(aws-crt@1.25.0))(@aws-sdk/client-sts@3.699.0(aws-crt@1.25.0))(aws-crt@1.25.0)
