@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.48.5
+
+### Patch Changes
+
+- [#43](https://github.com/sst/v2/pull/43) [`df5ee924accf976e3bd5de548b11836cb5da6476`](https://github.com/sst/v2/commit/df5ee924accf976e3bd5de548b11836cb5da6476) Thanks [@leanderiversen](https://github.com/leanderiversen)! - Updating asset replacer body logic
+
 ## 2.48.4
 
 ### Patch Changes
