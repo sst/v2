@@ -46,7 +46,7 @@ const SST_STACK_DESCRIPTION =
   "This stack includes resources needed to deploy SST apps into this environment";
 const OUTPUT_VERSION = "Version";
 const OUTPUT_BUCKET = "BucketName";
-const LATEST_VERSION = "7.3";
+const LATEST_VERSION = "7.4";
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
 export const useBootstrap = lazy(async () => {
