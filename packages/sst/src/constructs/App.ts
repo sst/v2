@@ -280,6 +280,11 @@ export class App extends CDKApp {
         `  }`,
         `}`,
         ``,
+        `declare global {`,
+        `  const __SST_DIRNAME: string;`,
+        `  const __SST_FILENAME: string;`,
+        `}`,
+        ``,
         ``,
       ].join("\n")
     );
@@ -375,9 +380,9 @@ export class App extends CDKApp {
                 new PolicyStatement({
                   effect: Effect.ALLOW,
                   actions: [
-                    "s3:GetObject", 
-                    "s3:GetObjectTagging", 
-                    "s3:PutObject", 
+                    "s3:GetObject",
+                    "s3:GetObjectTagging",
+                    "s3:PutObject",
                     "s3:PutObjectTagging"
                   ],
                   resources: [
