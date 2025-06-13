@@ -7,7 +7,7 @@
   "name": "@our-scope/sst",
   "version": "2.48.5",
   "bin": {
-    "sst": "cli/sst.js"
+    "sst": "dist/cli/sst.js"
   },
   "description": "A CLI to help deploy SST apps.",
   "type": "module",
