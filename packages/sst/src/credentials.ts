@@ -1,7 +1,8 @@
+import path from "path";
+import type { AwsCredentialIdentityProvider } from "@aws-sdk/types";
 import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
 import { GetCallerIdentityCommand, STSClient } from "@aws-sdk/client-sts";
 import { Logger } from "./logger.js";
-import { SdkProvider } from "sst-aws-cdk/lib/api/aws-auth/sdk-provider.js";
 import { StandardRetryStrategy } from "@aws-sdk/middleware-retry";
 export type {} from "@smithy/types";
 // @ts-expect-error
@@ -10,37 +11,38 @@ stupid.suppress = true;
 import { useProject } from "./project.js";
 import { lazy } from "./util/lazy.js";
 
-export const useAWSCredentialsProvider = lazy(() => {
-  const project = useProject();
-  Logger.debug("Using AWS profile", project.config.profile);
-  const provider = fromNodeProviderChain({
-    parentClientConfig: { region: project.config.region },
-    profile: project.config.profile,
-    roleArn: project.config.role,
-    mfaCodeProvider: async (serialArn: string) => {
-      const readline = await import("readline");
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
-      return new Promise<string>((resolve) => {
-        Logger.debug(`Require MFA token for serial ARN ${serialArn}`);
-        const prompt = () =>
-          rl.question(`Enter MFA code for ${serialArn}: `, async (input) => {
-            if (input.trim() !== "") {
-              resolve(input.trim());
-              rl.close();
-            } else {
-              // prompt again if no input
-              prompt();
-            }
-          });
-        prompt();
-      });
-    },
+export const useAWSCredentialsProvider: () => AwsCredentialIdentityProvider =
+  lazy(() => {
+    const project = useProject();
+    Logger.debug("Using AWS profile", project.config.profile);
+    const provider = fromNodeProviderChain({
+      clientConfig: { region: project.config.region },
+      profile: project.config.profile,
+      roleArn: project.config.role,
+      mfaCodeProvider: async (serialArn: string) => {
+        const readline = await import("readline");
+        const rl = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout,
+        });
+        return new Promise<string>((resolve) => {
+          Logger.debug(`Require MFA token for serial ARN ${serialArn}`);
+          const prompt = () =>
+            rl.question(`Enter MFA code for ${serialArn}: `, async (input) => {
+              if (input.trim() !== "") {
+                resolve(input.trim());
+                rl.close();
+              } else {
+                // prompt again if no input
+                prompt();
+              }
+            });
+          prompt();
+        });
+      },
+    });
+    return provider;
   });
-  return provider;
-});
 
 export const useAWSCredentials = () => {
   const provider = useAWSCredentialsProvider();
@@ -143,6 +145,21 @@ export function useAWSClient<C extends any>(
 }
 
 export const useAWSProvider = lazy(async () => {
+  const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
+  const cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
+  const { SdkProvider } = await import(
+    path.resolve(cdkToolkitPath, "..", "api", "aws-auth", "sdk-provider.js")
+  );
+  const { IoHelper } = await import(
+    path.resolve(cdkToolkitPath, "..", "api", "io", "private", "io-helper.js")
+  );
   const project = useProject();
-  return new SdkProvider(useAWSCredentialsProvider(), project.config.region!);
+  return new SdkProvider(useAWSCredentialsProvider(), project.config.region!, {
+    ioHelper: IoHelper.fromActionAwareIoHost({
+      //notify: (msg: IoMessage<unknown>) => console.log("!@#!@#! NOTIFY", msg),
+      notify: (msg: any) => {},
+      //requestResponse: <T>(msg: IoRequest<unknown, T>) => ioHost.requestResponse({ ...msg }),
+      requestResponse: (msg: any) => {},
+    }),
+  });
 });

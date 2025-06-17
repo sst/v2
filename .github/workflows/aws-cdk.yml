@@ -47,7 +47,9 @@ jobs:
               with_entries(
                 select(
                   .key != "@aws-cdk/cdk-build-tools" and
+                  .key != "@aws-cdk/node-bundle" and
                   .key != "@aws-cdk/pkglint" and
+                  .key != "@aws-cdk/user-input-gen" and
                   .key != "@aws-cdk/yargs-gen" and
                   .key != "cdk-assets"
                 )

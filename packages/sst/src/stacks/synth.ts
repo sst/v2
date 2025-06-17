@@ -2,11 +2,10 @@ import { Logger } from "../logger.js";
 import type { App } from "../constructs/App.js";
 import { useProject } from "../project.js";
 import { useAWSProvider, useSTSIdentity } from "../credentials.js";
-import * as contextproviders from "sst-aws-cdk/lib/context-providers/index.js";
 import path from "path";
 import { VisibleError } from "../error.js";
-import fs from "fs/promises";
 import { Semaphore } from "../util/semaphore.js";
+import { Configuration } from "../util/user-configuration.js";
 
 interface SynthOptions {
   buildDir?: string;
@@ -23,8 +22,11 @@ export async function synth(opts: SynthOptions) {
   Logger.debug("Synthesizing stacks...");
   const { App } = await import("../constructs/App.js");
   const cxapi = await import("@aws-cdk/cx-api");
-  const { Configuration } = await import(
-    "sst-aws-cdk/lib/cli/user-configuration.js"
+
+  const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
+  const cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
+  const { provideContextValues } = await import(
+    path.resolve(cdkToolkitPath, "..", "context-providers", "index.js")
   );
   const project = useProject();
 
@@ -88,11 +90,7 @@ export async function synth(opts: SynthOptions) {
           throw new VisibleError(formatErrorMessage(next.join("")));
         Logger.debug("Looking up context for:", next, "Previous:", previous);
         previous = new Set(next);
-        await contextproviders.provideContextValues(
-          missing,
-          cfg.context,
-          provider
-        );
+        await provideContextValues(missing, cfg.context, provider);
         if (cfg.context.keys.length) {
           await cfg.saveContext();
         }
