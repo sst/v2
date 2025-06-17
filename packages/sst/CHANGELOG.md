@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.49.1
+
+### Patch Changes
+
+- [#71](https://github.com/sst/v2/pull/71) [`675bcff9eab81ab7fa1cb52dc4656d2f1898b31c`](https://github.com/sst/v2/commit/675bcff9eab81ab7fa1cb52dc4656d2f1898b31c) Thanks [@jonmast](https://github.com/jonmast)! - Bootstrap: Bump stack version to 7.4
+
 ## 2.49.0
 
 ### Minor Changes
