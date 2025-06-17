@@ -17,8 +17,8 @@ import {
   publishAssets,
   Deployments,
   DeployStackOptions as PublishStackAssetsOptions,
-} from "./deployments.js";
-import { DeployStackOptions } from "./deploy-stack.js";
+} from "./deployments.ts.bk";
+import { DeployStackOptions } from "./deploy-stack.ts.bk";
 import { lazy } from "../util/lazy.js";
 import { StringWithoutPlaceholders } from "sst-aws-cdk/lib/api/util/placeholders.js";
 

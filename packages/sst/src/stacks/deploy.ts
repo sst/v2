@@ -1,8 +1,10 @@
+import path from "path";
 import { useBus } from "../bus.js";
 import { useProject } from "../project.js";
 import { useAWSClient, useAWSProvider } from "../credentials.js";
 import { Logger } from "../logger.js";
-import type { CloudFormationStackArtifact } from "aws-cdk-lib/cx-api";
+import { type CloudFormationStackArtifact } from "aws-cdk-lib/cx-api";
+import { type Stack } from "@aws-sdk/client-cloudformation";
 import {
   filterOutputs,
   isFailed,
@@ -13,24 +15,17 @@ import { VisibleError } from "../error.js";
 
 export async function publishAssets(stacks: CloudFormationStackArtifact[]) {
   Logger.debug("Publishing assets");
-  const provider = await useAWSProvider();
-  const { publishDeployAssets } = await import("../cdk/deployments-wrapper.js");
 
   const results: Record<string, any> = {};
-  for (const stack of stacks) {
-    const stackTags = Object.entries(stack.tags ?? {}).map(([Key, Value]) => ({
-      Key,
-      Value,
-    }));
-    const result = await publishDeployAssets(provider, {
-      stack: stack as any,
-      quiet: false,
-      deploymentMethod: {
-        method: "direct",
-      },
-      tags: stackTags,
-    });
-    results[stack.stackName] = result;
+  for (const stackArtifact of stacks) {
+    const cfnStack = await getCloudFormationStack(stackArtifact);
+    await addInUseExports(stackArtifact, cfnStack);
+    const deployment = await createCdkDeployments();
+    await buildAndPublishAssets(deployment, stackArtifact);
+    results[stackArtifact.stackName] = {
+      isUpdate: cfnStack && cfnStack.StackStatus !== "REVIEW_IN_PROGRESS",
+      params: await buildCloudFormationStackParams(deployment, stackArtifact),
+    };
   }
   return results;
 }
@@ -108,38 +103,48 @@ export async function deploy(
   const bus = useBus();
   const { cdk } = useProject().config;
   Logger.debug("Deploying stack", stack.id);
-  const provider = await useAWSProvider();
-  const { Deployments } = await import("../cdk/deployments.js");
-  const deployment = new Deployments({ sdkProvider: provider });
-  const stackTags = Object.entries(stack.tags ?? {}).map(([Key, Value]) => ({
-    Key,
-    Value,
-  }));
   try {
-    await addInUseExports(stack);
+    const cfnStack = await getCloudFormationStack(stack);
+    await addInUseExports(stack, cfnStack);
     bus.publish("stack.status", {
       stackID: stack.stackName,
       status: "PUBLISH_ASSETS_IN_PROGRESS",
     });
-    const result = await deployment.deployStack({
-      stack: stack as any,
-      quiet: true,
-      tags: stackTags,
-      deploymentMethod: {
-        method: "direct",
-      },
-      toolkitStackName: cdk?.toolkitStackName,
-    });
-    if (result?.type === "did-deploy-stack" && result.noOp) {
-      bus.publish("stack.status", {
-        stackID: stack.stackName,
-        status: "SKIPPED",
-      });
-      return {
-        errors: {},
-        outputs: filterOutputs(result.outputs),
-        status: "SKIPPED",
-      };
+    const deployment = await createCdkDeployments();
+    await buildAndPublishAssets(deployment, stack);
+
+    if (
+      cfnStack?.StackStatus === "ROLLBACK_COMPLETE" ||
+      cfnStack?.StackStatus === "ROLLBACK_FAILED"
+    ) {
+      await deleteCloudFormationStack(stack.stackName);
+    }
+
+    const stackParams = await buildCloudFormationStackParams(deployment, stack);
+    try {
+      cfnStack && cfnStack.StackStatus !== "REVIEW_IN_PROGRESS"
+        ? await updateCloudFormationStack(stackParams)
+        : await createCloudFormationStack(stackParams);
+    } catch (e: any) {
+      if (
+        e.name === "ValidationError" &&
+        e.message.includes("No updates are to be performed.")
+      ) {
+        bus.publish("stack.status", {
+          stackID: stack.stackName,
+          status: "SKIPPED",
+        });
+        return {
+          errors: {},
+          outputs: filterOutputs(
+            Object.fromEntries(
+              (cfnStack!.Outputs || []).map((o) => [o.OutputKey, o.OutputValue])
+            )
+          ),
+          status: "SKIPPED",
+        };
+      }
+      throw e;
     }
     bus.publish("stack.updated", {
       stackID: stack.stackName,
@@ -164,10 +169,14 @@ export async function deploy(
   }
 }
 
-async function addInUseExports(stack: CloudFormationStackArtifact) {
+async function addInUseExports(
+  stackArtifact: CloudFormationStackArtifact,
+  cfnStack?: Stack
+) {
+  if (!cfnStack) return;
+
   // Get old outputs
-  const oldOutputs = await getCloudFormationStackOutputs(stack);
-  if (!oldOutputs) return;
+  const oldOutputs = cfnStack.Outputs || [];
 
   // Get new exports
   // note: that we only want to handle outputs exported by CDK.
@@ -181,7 +190,7 @@ async function addInUseExports(stack: CloudFormationStackArtifact) {
   //       "Name": "frank-acme-auth:ExportsOutputRefauthUserPoolA78B038B8D9965B5"
   //     }
   //   },
-  const newTemplate = JSON.parse(await getLocalTemplate(stack));
+  const newTemplate = JSON.parse(await getLocalTemplate(stackArtifact));
   const newOutputs = newTemplate.Outputs || {};
   const newExportNames = Object.keys(newOutputs)
     .filter((outputKey) => outputKey.startsWith("ExportsOutput"))
@@ -230,13 +239,94 @@ async function addInUseExports(stack: CloudFormationStackArtifact) {
 
   // Save new template
   if (isDirty) {
-    await saveLocalTemplate(stack, JSON.stringify(newTemplate, null, 2));
+    await saveLocalTemplate(
+      stackArtifact,
+      JSON.stringify(newTemplate, null, 2)
+    );
   }
 }
 
-async function getCloudFormationStackOutputs(
+async function createCdkDeployments() {
+  const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
+  const cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
+  const { Deployments } = await import(
+    path.resolve(cdkToolkitPath, "..", "api", "deployments", "deployments.js")
+  );
+  const { IoHelper } = await import(
+    path.resolve(cdkToolkitPath, "..", "api", "io", "private", "io-helper.js")
+  );
+  const provider = await useAWSProvider();
+  await useAWSProvider();
+  const ioHelper = IoHelper.fromActionAwareIoHost({
+    notify: (msg: any) => {},
+    requestResponse: (msg: any) => {},
+  });
+  return new Deployments({
+    sdkProvider: provider,
+    ioHelper,
+  });
+}
+
+async function buildAndPublishAssets(
+  deployment: any,
+  stackArtifact: CloudFormationStackArtifact
+) {
+  const { AssetManifestArtifact } = await import("aws-cdk-lib/cx-api");
+  const { AssetManifest } = await import("cdk-assets");
+  for (const artifact of stackArtifact.dependencies) {
+    if (!AssetManifestArtifact.isAssetManifestArtifact(artifact)) continue;
+    const manifest = AssetManifest.fromFile(artifact.file);
+
+    for (const entry of manifest.entries) {
+      await deployment.buildSingleAsset(artifact, manifest, entry, {
+        stack: stackArtifact,
+        roleArn: stackArtifact.cloudFormationExecutionRoleArn,
+        stackName: stackArtifact.stackName,
+      });
+
+      await deployment.publishSingleAsset(manifest, entry, {
+        stack: stackArtifact,
+        roleArn: stackArtifact.cloudFormationExecutionRoleArn,
+        stackName: stackArtifact.stackName,
+      });
+    }
+  }
+}
+
+async function buildCloudFormationStackParams(
+  deployment: any,
   stack: CloudFormationStackArtifact
 ) {
+  const resolvedEnv = await deployment.resolveEnvironment(stack);
+  const s3Url = stack
+    .stackTemplateAssetObjectUrl!.replace(
+      "${AWS::AccountId}",
+      resolvedEnv.account
+    )
+    .match(/s3:\/\/([^/]+)\/(.*)$/);
+  const templateUrl = s3Url
+    ? `https://s3.${resolvedEnv.region}.amazonaws.com/${s3Url[1]}/${s3Url[2]}`
+    : stack.stackTemplateAssetObjectUrl;
+
+  return {
+    StackName: stack.stackName,
+    TemplateURL: templateUrl,
+    //TemplateBody: bodyParameter.TemplateBody,
+    //Parameters: stackParams.apiParameters,
+    Parameters: [],
+    Capabilities: [
+      "CAPABILITY_IAM",
+      "CAPABILITY_NAMED_IAM",
+      "CAPABILITY_AUTO_EXPAND",
+    ],
+    Tags: Object.entries(stack.tags ?? {}).map(([Key, Value]) => ({
+      Key,
+      Value,
+    })),
+  };
+}
+
+async function getCloudFormationStack(stack: CloudFormationStackArtifact) {
   const { CloudFormationClient, DescribeStacksCommand } = await import(
     "@aws-sdk/client-cloudformation"
   );
@@ -248,7 +338,7 @@ async function getCloudFormationStackOutputs(
       })
     );
     if (!stacks || stacks.length === 0) return;
-    return stacks[0].Outputs || [];
+    return stacks[0];
   } catch (e: any) {
     if (
       e.name === "ValidationError" &&
@@ -259,6 +349,62 @@ async function getCloudFormationStackOutputs(
     } else {
       throw e;
     }
+  }
+}
+
+async function createCloudFormationStack(input: any) {
+  const { CloudFormationClient, CreateStackCommand } = await import(
+    "@aws-sdk/client-cloudformation"
+  );
+  const client = useAWSClient(CloudFormationClient);
+  await client.send(new CreateStackCommand(input));
+}
+
+async function updateCloudFormationStack(input: any) {
+  const { CloudFormationClient, UpdateStackCommand } = await import(
+    "@aws-sdk/client-cloudformation"
+  );
+  const client = useAWSClient(CloudFormationClient);
+  await client.send(new UpdateStackCommand(input));
+}
+
+async function deleteCloudFormationStack(stackName: string) {
+  const { CloudFormationClient, DescribeStacksCommand, DeleteStackCommand } =
+    await import("@aws-sdk/client-cloudformation");
+  const client = useAWSClient(CloudFormationClient);
+  try {
+    await client.send(new DeleteStackCommand({ StackName: stackName }));
+    while (true) {
+      const { Stacks: stacks } = await client.send(
+        new DescribeStacksCommand({
+          StackName: stackName,
+        })
+      );
+      if (!stacks || stacks.length === 0) {
+        return;
+      }
+      const stack = stacks[0];
+      if (stack.StackStatus === "DELETE_IN_PROGRESS") {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+      if (stack.StackStatus === "DELETE_COMPLETE") {
+        return;
+      }
+      if (stack.StackStatus === "DELETE_FAILED") {
+        throw new Error(
+          `Failed deleting stack ${stackName} that had previously failed creation (current state: ${stack.StackStatus})`
+        );
+      }
+    }
+  } catch (e: any) {
+    if (
+      e.name === "ValidationError" &&
+      e.message.includes("Stack with id") &&
+      e.message.includes("does not exist")
+    ) {
+      return;
+    }
+    throw e;
   }
 }
 
