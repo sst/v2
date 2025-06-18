@@ -1,5 +1,6 @@
 import esbuild from "esbuild";
 import fs from "fs";
+import path from "path";
 
 const pkg = JSON.parse(fs.readFileSync("package.json"));
 
@@ -171,5 +172,28 @@ await Promise.all(
     })
   )
 );
+
+const distPkg = {
+    name: pkg.name,
+    version: pkg.version,
+    description: pkg.description,
+    license: pkg.license,
+    main: pkg.main || "dist/index.js",
+    bin: pkg.bin,
+    type: "module",
+    dependencies: pkg.dependencies,
+    peerDependencies: pkg.peerDependencies,
+    exports: pkg.exports,
+    repository: pkg.repository,
+    keywords: pkg.keywords,
+    author: pkg.author,
+};
+
+fs.writeFileSync(
+    path.resolve("dist/package.json"),
+    JSON.stringify(distPkg, null, 2) + "\n",
+    "utf-8"
+);
+ console.log("→ dist/package.json written with version", pkg.version);
 
 console.log("Built");
