@@ -4,8 +4,9 @@
     "access": "public"
   },
   "sideEffects": false,
-  "name": "@our-scope/sst",
+  "name": "sst",
   "version": "2.48.5",
+  "main": "dist/index.js",
   "bin": {
     "sst": "dist/cli/sst.js"
   },
@@ -23,16 +24,16 @@
     "url": "git+https://github.com/sst/v2.git",
     "directory": "packages/cli"
   },
-  "exports": {
-    "./constructs/deprecated": "./constructs/deprecated/index.js",
-    "./constructs/future": "./constructs/future/index.js",
-    "./constructs": "./constructs/index.js",
-    "./context": "./context/index.js",
-    "./node/future/*": "./node/future/*/index.js",
-    "./node/*": "./node/*/index.js",
-    ".": "./index.js",
-    "./*": "./*"
-  },
+    "exports": {
+      "./constructs/deprecated": "./dist/constructs/deprecated/index.js",
+      "./constructs/future":    "./dist/constructs/future/index.js",
+      "./constructs":           "./dist/constructs/index.js",
+      "./context":              "./dist/context/index.js",
+      "./node/future/*":        "./dist/node/future/*/index.js",
+      "./node/*":               "./dist/node/*/index.js",
+     ".":                      "./dist/index.js",
+      "./*":                    "./dist/*"
+    },
   "homepage": "https://sst.dev",
   "dependencies": {
     "@aws-cdk/aws-lambda-python-alpha": "2.179.0-alpha.0",
@@ -71,7 +72,7 @@
     "chalk": "^5.2.0",
     "chokidar": "^3.5.3",
     "ci-info": "^3.7.0",
-    "colorette": "^2.0.19",
+    "colorette": "^2.0.20",
     "conf": "^10.2.0",
     "constructs": "10.3.0",
     "cross-spawn": "^7.0.3",
@@ -79,7 +80,7 @@
     "dotenv": "^16.0.3",
     "esbuild": "0.18.13",
     "express": "^4.18.2",
-    "fast-jwt": "^5.0.5",
+    "fast-jwt": "^3.3.3",
     "get-port": "^6.1.2",
     "glob": "^10.0.0",
     "graphql": "*",
@@ -145,7 +146,6 @@
   "bugs": {
     "url": "https://github.com/sst/v2/issues"
   },
-  "main": "index.js",
   "directories": {
     "test": "test"
   },

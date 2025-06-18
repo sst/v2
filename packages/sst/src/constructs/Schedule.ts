@@ -5,6 +5,7 @@ import { Function as Func } from "./Function.js";
 import { getFunctionRef } from "./Construct.js";
 import { SSTConstruct } from "./Construct.js";
 import { Permissions } from "./util/permission.js";
+import { BindingResource } from "./util/binding.js";
 
 type ScheduleJob =
     | string
@@ -16,12 +17,13 @@ type ScheduleJob =
 };
 
 export interface ScheduleProps {
-    schedule: string;
+    schedule?: `rate(${string})` | `cron(${string})`;
     timezone?: string;
     enabled?: boolean;
     description?: string;
     retryPolicy?: CfnSchedule.RetryPolicyProperty;
     job: ScheduleJob;
+    cdk?: { id?: string };
 }
 
 export class Schedule extends Construct implements SSTConstruct {
@@ -31,8 +33,12 @@ export class Schedule extends Construct implements SSTConstruct {
     readonly scheduleResource: CfnSchedule;
 
     constructor(scope: Construct, id: string, props: ScheduleProps) {
-        super(scope, id);
+        super(scope, props.cdk?.id || id);
         this.id = id;
+
+        if (!props.schedule) {
+            throw new Error(`Missing "schedule" in the "${this.node.id}" Schedule`);
+        }
 
         let jobDefinition: string;
         let jobTargetOverride: Partial<CfnSchedule.TargetProperty> = {};
@@ -83,13 +89,12 @@ export class Schedule extends Construct implements SSTConstruct {
         app.registerTypes?.(this);
     }
 
-    bind = (constructs: SSTConstruct[]) => {
+    bind = (constructs: BindingResource[]) => {
         this.jobFunction.bind(constructs);
     };
 
-    attachPermissions = (permissions: string | string[] | Permissions) => {
-        const perms: Permissions = typeof permissions === "string" ? [permissions] : permissions;
-        this.jobFunction.attachPermissions(perms);
+    attachPermissions = (permissions: Permissions) => {
+        this.jobFunction.attachPermissions(permissions);
     };
 
     getConstructMetadata() {

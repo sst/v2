@@ -267,7 +267,7 @@ export class RDSv2 extends Construct implements SSTConstruct {
             defaultDatabaseName,
             enableDataApi: true,
             engine: this.getEngine(engine),
-            writer: ClusterInstance.serverlessV2(`${name}-writer`),
+            writer: ClusterInstance.serverlessV2(`${name}-serverless-v2-writer`),
             ...this.getScaling(scaling),
             vpc: this.getVpc(clusterProps),
             vpcSubnets: this.getVpcSubnets(clusterProps),
