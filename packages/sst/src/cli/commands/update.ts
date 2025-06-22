@@ -26,7 +26,7 @@ export const update = (program: Program) =>
         const project = useProject();
         const files = await findAllPackageJson(project.paths.root);
         const metadata = await fetch(
-          `https://registry.npmjs.org/sst/${args.version || "latest"}`
+          `https://registry.npmjs.org/sst/${args.version || "two"}`
         ).then((resp) => resp.json() as any);
         const allChanges = new Map<string, Packages>();
         const allOldPackages = new Map<string, Packages>();
