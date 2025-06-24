@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.49.2
+
+### Patch Changes
+
+- [`c7106d164af9dcc410dcbc61886a6723480424d9`](https://github.com/sst/v2/commit/c7106d164af9dcc410dcbc61886a6723480424d9) Thanks [@fwang](https://github.com/fwang)! - Fix CDK context loading
+
 ## 2.49.1
 
 ### Patch Changes
