@@ -25,6 +25,12 @@ export async function synth(opts: SynthOptions) {
 
   const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
   const cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
+  const { IoHelper } = await import(
+    path.resolve(cdkToolkitPath, "..", "api", "io", "private", "io-helper.js")
+  );
+  const { PluginHost } = await import(
+    path.resolve(cdkToolkitPath, "..", "api", "plugin", "plugin.js")
+  );
   const { provideContextValues } = await import(
     path.resolve(cdkToolkitPath, "..", "context-providers", "index.js")
   );
@@ -90,8 +96,19 @@ export async function synth(opts: SynthOptions) {
           throw new VisibleError(formatErrorMessage(next.join("")));
         Logger.debug("Looking up context for:", next, "Previous:", previous);
         previous = new Set(next);
-        await provideContextValues(missing, cfg.context, provider);
-        if (cfg.context.keys.length) {
+        const updates = await provideContextValues(
+          missing,
+          provider,
+          new PluginHost(),
+          IoHelper.fromActionAwareIoHost({
+            notify: (msg: any) => {},
+            requestResponse: (msg: any) => {},
+          })
+        );
+        if (Object.keys(updates).length) {
+          for (const [key, value] of Object.entries(updates)) {
+            cfg.context.set(key, value);
+          }
           await cfg.saveContext();
         }
         continue;
