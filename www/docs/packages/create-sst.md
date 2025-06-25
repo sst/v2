@@ -38,7 +38,7 @@ yarn create sst@two
 <TabItem value="pnpm">
 
 ```bash
-pnpm create sst
+pnpm create sst@two
 ```
 
 </TabItem>
@@ -74,7 +74,7 @@ yarn create sst@two --template=other/go
 <TabItem value="pnpm">
 
 ```bash
-pnpm create sst --template=other/go
+pnpm create sst@two --template=other/go
 ```
 
 </TabItem>
@@ -106,7 +106,7 @@ yarn create sst@two my-sst-app
 <TabItem value="pnpm">
 
 ```bash
-pnpm create sst my-sst-app
+pnpm create sst@two my-sst-app
 ```
 
 </TabItem>

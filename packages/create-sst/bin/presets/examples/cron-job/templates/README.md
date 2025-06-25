@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/cron-job
 # Or with Yarn
 $ yarn create sst@two --template=examples/cron-job
 # Or with PNPM
-$ pnpm create sst --template=examples/cron-job
+$ pnpm create sst@two --template=examples/cron-job
 ```
 
 ## Commands

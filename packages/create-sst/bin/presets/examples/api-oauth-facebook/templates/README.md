@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/api-oauth-facebook
 # Or with Yarn
 $ yarn create sst@two --template=examples/api-oauth-facebook
 # Or with PNPM
-$ pnpm create sst --template=examples/api-oauth-facebook
+$ pnpm create sst@two --template=examples/api-oauth-facebook
 ```
 
 ## Commands

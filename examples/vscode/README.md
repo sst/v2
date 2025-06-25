@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/vscode
 # Or with Yarn
 $ yarn create sst@two --template=examples/vscode
 # Or with PNPM
-$ pnpm create sst --template=examples/vscode
+$ pnpm create sst@two --template=examples/vscode
 ```
 
 ## Launch Configurations

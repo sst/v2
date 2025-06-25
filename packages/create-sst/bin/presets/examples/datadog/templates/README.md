@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/datadog
 # Or with Yarn
 $ yarn create sst@two --template=examples/datadog
 # Or with PNPM
-$ pnpm create sst --template=examples/datadog
+$ pnpm create sst@two --template=examples/datadog
 ```
 
 ## Commands

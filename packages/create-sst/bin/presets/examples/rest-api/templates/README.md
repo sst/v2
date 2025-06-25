@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/rest-api-dynamodb
 # Or with Yarn
 $ yarn create sst@two --template=examples/rest-api-dynamodb
 # Or with PNPM
-$ pnpm create sst --template=examples/rest-api-dynamodb
+$ pnpm create sst@two --template=examples/rest-api-dynamodb
 ```
 
 ## Commands

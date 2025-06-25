@@ -46,7 +46,7 @@ yarn create sst@two --template=graphql/rds
 <TabItem value="pnpm">
 
 ```bash
-pnpm create sst --template=graphql/rds
+pnpm create sst@two --template=graphql/rds
 ```
 
 </TabItem>

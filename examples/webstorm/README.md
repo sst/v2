@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/webstorm
 # Or with Yarn
 $ yarn create sst@two --template=examples/webstorm
 # Or with PNPM
-$ pnpm create sst --template=examples/webstorm
+$ pnpm create sst@two --template=examples/webstorm
 ```
 
 ## Commands

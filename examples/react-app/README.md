@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/react-app
 # Or with Yarn
 $ yarn create sst@two --template=examples/react-app
 # Or with PNPM
-$ pnpm create sst --template=examples/react-app
+$ pnpm create sst@two --template=examples/react-app
 ```
 
 ## Commands

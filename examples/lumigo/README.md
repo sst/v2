@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/lumigo
 # Or with Yarn
 $ yarn create sst@two --template=examples/lumigo
 # Or with PNPM
-$ pnpm create sst --template=examples/lumigo
+$ pnpm create sst@two --template=examples/lumigo
 ```
 
 ## Commands

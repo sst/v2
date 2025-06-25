@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/react-app-auth-cognito
 # Or with Yarn
 $ yarn create sst@two --template=examples/react-app-auth-cognito
 # Or with PNPM
-$ pnpm create sst --template=examples/react-app-auth-cognito
+$ pnpm create sst@two --template=examples/react-app-auth-cognito
 ```
 
 ## Commands

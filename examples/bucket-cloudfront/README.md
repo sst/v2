@@ -11,7 +11,7 @@ $ npx create-sst@two --template=examples/bucket-cloudfront
 # Or with Yarn
 $ yarn create sst@two --template=examples/bucket-cloudfront
 # Or with PNPM
-$ pnpm create sst --template=examples/bucket-cloudfront
+$ pnpm create sst@two --template=examples/bucket-cloudfront
 ```
 
 ## Commands

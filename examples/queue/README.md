@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/queue
 # Or with Yarn
 $ yarn create sst@two --template=examples/queue
 # Or with PNPM
-$ pnpm create sst --template=examples/queue
+$ pnpm create sst@two --template=examples/queue
 ```
 
 ## Commands

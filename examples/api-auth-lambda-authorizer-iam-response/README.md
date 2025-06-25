@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/api-auth-lambda-authorizer-iam-response
 # Or with Yarn
 $ yarn create sst@two --template=examples/api-auth-lambda-authorizer-iam-response
 # Or with PNPM
-$ pnpm create sst --template=examples/api-auth-lambda-authorizer-iam-response
+$ pnpm create sst@two --template=examples/api-auth-lambda-authorizer-iam-response
 ```
 
 Start the Live Lambda Development environment.

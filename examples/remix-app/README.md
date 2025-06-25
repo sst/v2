@@ -11,7 +11,7 @@ $ npx create-sst@two --template=examples/remix-app
 # Or with Yarn
 $ yarn create sst@two --template=examples/remix-app
 # Or with PNPM
-$ pnpm create sst --template=examples/remix-app
+$ pnpm create sst@two --template=examples/remix-app
 ```
 
 ## Commands

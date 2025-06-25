@@ -78,7 +78,7 @@ yarn create sst@two
 
 ```bash
 cd astro-project
-pnpm create sst
+pnpm create sst@two
 ```
 
 </TabItem>

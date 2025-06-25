@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/sentry
 # Or with Yarn
 $ yarn create sst@two --template=examples/sentry
 # Or with PNPM
-$ pnpm create sst --template=examples/sentry
+$ pnpm create sst@two --template=examples/sentry
 ```
 
 ## Commands

@@ -53,7 +53,7 @@ yarn create sst@two my-sst-app
 <TabItem value="pnpm">
 
 ```bash
-pnpm create sst my-sst-app
+pnpm create sst@two my-sst-app
 ```
 
 </TabItem>

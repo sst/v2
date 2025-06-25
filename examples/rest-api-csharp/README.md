@@ -11,7 +11,7 @@ $ npx create-sst@two --template=examples/rest-api-csharp
 # Or with Yarn
 $ yarn create sst@two --template=examples/rest-api-csharp
 # Or with PNPM
-$ pnpm create sst --template=examples/rest-api-csharp
+$ pnpm create sst@two --template=examples/rest-api-csharp
 ```
 
 ## Commands

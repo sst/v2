@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/flutter-app
 # Or with Yarn
 $ yarn create sst@two --template=examples/flutter-app
 # Or with PNPM
-$ pnpm create sst --template=examples/flutter-app
+$ pnpm create sst@two --template=examples/flutter-app
 ```
 
 Set the deployed API endpoint in Flutter. Create a `.env` file inside `frontend\` with the following content:

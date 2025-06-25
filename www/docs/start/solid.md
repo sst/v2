@@ -75,7 +75,7 @@ yarn create sst@two
 <TabItem value="pnpm">
 
 ```bash
-pnpm create sst
+pnpm create sst@two
 ```
 
 </TabItem>

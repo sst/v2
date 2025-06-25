@@ -13,7 +13,7 @@ $ npx create-sst@two --template=examples/api-auth-twitter
 # Or with Yarn
 $ yarn create sst@two --template=examples/api-auth-twitter
 # Or with PNPM
-$ pnpm create sst --template=examples/api-auth-twitter
+$ pnpm create sst@two --template=examples/api-auth-twitter
 ```
 
 ## Commands
