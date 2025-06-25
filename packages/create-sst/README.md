@@ -25,7 +25,7 @@ npm init sst
 Or with Yarn 0.25+
 
 ```bash
-yarn create sst
+yarn create sst@two
 ```
 
 Or with PNPM 

@@ -70,7 +70,7 @@ npx create-sst@two
 
 ```bash
 cd my-remix-app
-yarn create sst
+yarn create sst@two
 ```
 
 </TabItem>

@@ -11,7 +11,7 @@ Install the example.
 ```bash
 $ npx create-sst@two --template=examples/cron-job
 # Or with Yarn
-$ yarn create sst --template=examples/cron-job
+$ yarn create sst@two --template=examples/cron-job
 # Or with PNPM
 $ pnpm create sst --template=examples/cron-job
 ```

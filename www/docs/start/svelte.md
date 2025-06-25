@@ -68,7 +68,7 @@ npx create-sst@two
 <TabItem value="yarn">
 
 ```bash
-yarn create sst
+yarn create sst@two
 ```
 
 </TabItem>

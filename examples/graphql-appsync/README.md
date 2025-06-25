@@ -11,7 +11,7 @@ Install the example.
 ```bash
 $ npx create-sst@two --template=examples/graphql-appsync
 # Or with Yarn
-$ yarn create sst --template=examples/graphql-appsync
+$ yarn create sst@two --template=examples/graphql-appsync
 # Or with PNPM
 $ pnpm create sst --template=examples/graphql-appsync
 ```

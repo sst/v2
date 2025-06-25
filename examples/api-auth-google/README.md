@@ -11,7 +11,7 @@ Install the example.
 ```bash
 $ npx create-sst@two --template=examples/api-auth-google
 # Or with Yarn
-$ yarn create sst --template=examples/api-auth-google
+$ yarn create sst@two --template=examples/api-auth-google
 # Or with PNPM
 $ pnpm create sst --template=examples/api-auth-google
 ```

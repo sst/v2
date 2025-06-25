@@ -9,7 +9,7 @@ Install the example.
 ```bash
 $ npx create-sst@two --template=examples/rest-api-csharp
 # Or with Yarn
-$ yarn create sst --template=examples/rest-api-csharp
+$ yarn create sst@two --template=examples/rest-api-csharp
 # Or with PNPM
 $ pnpm create sst --template=examples/rest-api-csharp
 ```

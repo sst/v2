@@ -31,7 +31,7 @@ npx create-sst@two
 <TabItem value="yarn">
 
 ```bash
-yarn create sst
+yarn create sst@two
 ```
 
 </TabItem>
@@ -67,7 +67,7 @@ npx create-sst@two --template=other/go
 <TabItem value="yarn">
 
 ```bash
-yarn create sst --template=other/go
+yarn create sst@two --template=other/go
 ```
 
 </TabItem>
@@ -99,7 +99,7 @@ npx create-sst@two my-sst-app
 <TabItem value="yarn">
 
 ```bash
-yarn create sst my-sst-app
+yarn create sst@two my-sst-app
 ```
 
 </TabItem>

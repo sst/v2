@@ -11,7 +11,7 @@ Install the example.
 ```bash
 $ npx create-sst@two --template=examples/layer-chrome-aws-lambda
 # Or with Yarn
-$ yarn create sst --template=examples/layer-chrome-aws-lambda
+$ yarn create sst@two --template=examples/layer-chrome-aws-lambda
 # Or with PNPM
 $ pnpm create sst --template=examples/layer-chrome-aws-lambda
 ```

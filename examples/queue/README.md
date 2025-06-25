@@ -11,7 +11,7 @@ Install the example.
 ```bash
 $ npx create-sst@two --template=examples/queue
 # Or with Yarn
-$ yarn create sst --template=examples/queue
+$ yarn create sst@two --template=examples/queue
 # Or with PNPM
 $ pnpm create sst --template=examples/queue
 ```
