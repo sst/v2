@@ -74,8 +74,17 @@ $ cd ./path/to/project
 $ pnpm link ./path/to/sst/packages/sst/dist
 $ pnpm sst dev
 ```
-
 Note that we link to the `./dist` folder since that is where we publish out of.
+
+_Note_: For the bluestone health fork of sst v2, if `pnpm link` does not work, you can manually create the link. In the target project's `package.json`, update as follows:
+
+```json
+"devDependencies":{
+   ...,
+   "sst": "link: ./path/to/sst/packages/sst/dist"
+   ...
+}
+```
 
 ### Docs
 

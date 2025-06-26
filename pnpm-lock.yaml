@@ -432,14 +432,14 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0(ink@4.4.1(@types/react@18.3.23)(react@18.3.1))(react@18.3.1)
       kysely:
-        specifier: ^0.25.0
-        version: 0.25.0
+        specifier: ^0.27.4
+        version: 0.27.6
       kysely-codegen:
         specifier: ^0.10.1
-        version: 0.10.1(kysely@0.25.0)
+        version: 0.10.1(kysely@0.27.6)
       kysely-data-api:
-        specifier: ^0.2.1
-        version: 0.2.1(@aws-sdk/client-rds-data@3.699.0(aws-crt@1.27.1))(kysely@0.25.0)
+        specifier: ^1.0.1
+        version: 1.0.1(@aws-sdk/client-rds-data@3.699.0(aws-crt@1.27.1))(kysely@0.27.6)
       minimatch:
         specifier: ^6.1.6
         version: 6.2.0
@@ -7554,14 +7554,14 @@ packages:
       pg:
         optional: true
 
-  kysely-data-api@0.2.1:
-    resolution: {integrity: sha512-KmASvF1gmjVqyU9WOUXhCQlv29ofR+xc2DhjaIomz1+Bjd/VtR2/3g4ZuXwG1L4lWGKxMuo5iOvK3XyPbB4LdQ==}
+  kysely-data-api@1.0.1:
+    resolution: {integrity: sha512-Bw1ap6yjBTRmTJ0ohiMfrBmPmyey+pmRj46xj6cudvhEntl/1OfuYNOos9E7B1Z+oKcaL8gjEHym65zP8DMiUA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': 3.x
-      kysely: 0.x
+      kysely: ^0.27.3
 
-  kysely@0.25.0:
-    resolution: {integrity: sha512-srn0efIMu5IoEBk0tBmtGnoUss4uwvxtbFQWG/U2MosfqIace1l43IFP1PmEpHRDp+Z79xIcKEqmHH3dAvQdQA==}
+  kysely@0.27.6:
+    resolution: {integrity: sha512-FIyV/64EkKhJmjgC0g2hygpBv5RNWVPyNCqSAD7eTCv6eFWNIi4PN1UvdSJGicN/o35bnevgis4Y0UDC0qi8jQ==}
     engines: {node: '>=14.0.0'}
 
   latest-version@5.1.0:
@@ -22229,20 +22229,20 @@ snapshots:
 
   kolorist@1.8.0: {}
 
-  kysely-codegen@0.10.1(kysely@0.25.0):
+  kysely-codegen@0.10.1(kysely@0.27.6):
     dependencies:
       chalk: 4.1.2
       dotenv: 16.5.0
-      kysely: 0.25.0
+      kysely: 0.27.6
       micromatch: 4.0.8
       minimist: 1.2.8
 
-  kysely-data-api@0.2.1(@aws-sdk/client-rds-data@3.699.0(aws-crt@1.27.1))(kysely@0.25.0):
+  kysely-data-api@1.0.1(@aws-sdk/client-rds-data@3.699.0(aws-crt@1.27.1))(kysely@0.27.6):
     dependencies:
       '@aws-sdk/client-rds-data': 3.699.0(aws-crt@1.27.1)
-      kysely: 0.25.0
+      kysely: 0.27.6
 
-  kysely@0.25.0: {}
+  kysely@0.27.6: {}
 
   latest-version@5.1.0:
     dependencies:

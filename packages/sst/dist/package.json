@@ -1,6 +1,6 @@
 {
   "name": "sst",
-  "version": "2.40.8",
+  "version": "2.49.2",
   "bin": {
     "sst": "cli/sst.js"
   },

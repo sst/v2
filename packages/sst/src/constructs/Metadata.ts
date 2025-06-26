@@ -58,6 +58,12 @@ export type WebSocketApiMetadata = ExtractMetadata<WebSocketApi>;
 import type { RDS } from "./RDS.js";
 export type RDSMetadata = ExtractMetadata<RDS>;
 
+import type { RDSv2 } from "./RDSv2.js";
+export type RDSv2Metadata = ExtractMetadata<RDSv2>;
+
+import type { Schedule } from "./Schedule.js";
+export type ScheduleMetadata = ExtractMetadata<Schedule>;
+
 import type { Auth } from "./future/Auth.js";
 export type AuthMetadata = ExtractMetadata<Auth>;
 
