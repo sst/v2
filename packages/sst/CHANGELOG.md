@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.49.3
+
+### Patch Changes
+
+- [#84](https://github.com/sst/v2/pull/84) [`c8802afb4e4f7960003325839e2a51ad35d4ef4e`](https://github.com/sst/v2/commit/c8802afb4e4f7960003325839e2a51ad35d4ef4e) Thanks [@muametgrooby](https://github.com/muametgrooby)! - use tag 'two' instead of 'latest' in sst update
+
 ## 2.49.2
 
 ### Patch Changes
