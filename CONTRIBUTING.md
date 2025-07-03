@@ -73,18 +73,29 @@ If you want to test your changes against a project you are working on you can ma
 $ cd ./path/to/project
 $ pnpm link ./path/to/sst/packages/sst/dist
 $ pnpm sst dev
+# When done and you want to remove the link, run:
+$ pnpm unlink sst
 ```
 Note that we link to the `./dist` folder since that is where we publish out of.
 
 _Note_: For the bluestone health fork of sst v2, if `pnpm link` does not work, you can manually create the link. In the target project's `package.json`, update as follows:
 
 ```json
-"devDependencies":{
-   ...,
-   "sst": "link: ./path/to/sst/packages/sst/dist"
+{...,
+  "pnpm": {
    ...
+    "overrides": {
+      "sst": "link:./path/to/sst/packages/sst/dist"
+    }
+  }
 }
 ```
+
+### Packaging a BSH release
+
+1. Merge changes to [`main-bsh](https://github.com/Bluestone-Health/sst-v2/tree/main-bsh), where you can also rebase off the upstream if desired.
+2. Run `cd packages/sst` and then`pnpm build && pnpm pack` to build the package.
+3. Create a release on the [Bluestone Health fork](https://github.com/Bluestone-Health/sst-v2/releases/new) and upload the package. Match the version number to the upstream version you're pinned to.
 
 ### Docs
 

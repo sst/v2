@@ -13,7 +13,7 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "prepare": "",
+    "prepare": "pnpm run build",
     "build": "node build.mjs && tsc",
     "test": "vitest run",
     "dev": "tsc -w"
