@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.49.4
+
+### Patch Changes
+
+- [#45](https://github.com/sst/v2/pull/45) [`27f818d8f336a207651209edae1b9b92282fc1ab`](https://github.com/sst/v2/commit/27f818d8f336a207651209edae1b9b92282fc1ab) Thanks [@adriencaccia](https://github.com/adriencaccia)! - Ensure error name is correct when using local lambda dev mode
+
 ## 2.49.3
 
 ### Patch Changes
