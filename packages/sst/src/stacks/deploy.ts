@@ -298,6 +298,7 @@ async function buildCloudFormationStackParams(
   stack: CloudFormationStackArtifact
 ) {
   const resolvedEnv = await deployment.resolveEnvironment(stack);
+  const executionRoleArn = stack.cloudFormationExecutionRoleArn?.replace("${AWS::AccountId}", resolvedEnv.account);
   const s3Url = stack
     .stackTemplateAssetObjectUrl!.replace(
       "${AWS::AccountId}",
@@ -311,6 +312,7 @@ async function buildCloudFormationStackParams(
   return {
     StackName: stack.stackName,
     TemplateURL: templateUrl,
+    RoleARN: executionRoleArn,
     //TemplateBody: bodyParameter.TemplateBody,
     //Parameters: stackParams.apiParameters,
     Parameters: [],
