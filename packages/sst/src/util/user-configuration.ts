@@ -2,13 +2,14 @@
 import * as os from "os";
 import * as fs_path from "path";
 import * as fs from "fs";
+import { fileURLToPath } from "url";
 
 export const PROJECT_CONFIG = "cdk.json";
 export const USER_DEFAULTS = "~/.cdk.json";
 const CONTEXT_KEY = "context";
 
 const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
-const cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
+const cdkToolkitPath = fileURLToPath(cdkToolkitUrl);
 const { ToolkitError } = await import(cdkToolkitPath);
 const { Context, PROJECT_CONTEXT } = await import(
   fs_path.resolve(cdkToolkitPath, "..", "api", "context.js")
