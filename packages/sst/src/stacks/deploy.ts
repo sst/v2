@@ -1,6 +1,6 @@
 import path from "path";
 import { useBus } from "../bus.js";
-import { useProject } from "../project.js";
+import { ConfigOptions, useProject } from "../project.js";
 import { useAWSClient, useAWSProvider } from "../credentials.js";
 import { Logger } from "../logger.js";
 import { type CloudFormationStackArtifact } from "aws-cdk-lib/cx-api";
@@ -15,6 +15,7 @@ import { VisibleError } from "../error.js";
 
 export async function publishAssets(stacks: CloudFormationStackArtifact[]) {
   Logger.debug("Publishing assets");
+  const { cdk } = useProject().config;
 
   const results: Record<string, any> = {};
   for (const stackArtifact of stacks) {
@@ -24,7 +25,7 @@ export async function publishAssets(stacks: CloudFormationStackArtifact[]) {
     await buildAndPublishAssets(deployment, stackArtifact);
     results[stackArtifact.stackName] = {
       isUpdate: cfnStack && cfnStack.StackStatus !== "REVIEW_IN_PROGRESS",
-      params: await buildCloudFormationStackParams(deployment, stackArtifact),
+      params: await buildCloudFormationStackParams(deployment, stackArtifact, cdk),
     };
   }
   return results;
@@ -120,7 +121,7 @@ export async function deploy(
       await deleteCloudFormationStack(stack.stackName);
     }
 
-    const stackParams = await buildCloudFormationStackParams(deployment, stack);
+    const stackParams = await buildCloudFormationStackParams(deployment, stack, cdk);
     try {
       cfnStack && cfnStack.StackStatus !== "REVIEW_IN_PROGRESS"
         ? await updateCloudFormationStack(stackParams)
@@ -295,10 +296,11 @@ async function buildAndPublishAssets(
 
 async function buildCloudFormationStackParams(
   deployment: any,
-  stack: CloudFormationStackArtifact
+  stack: CloudFormationStackArtifact,
+  cdkOptions?: ConfigOptions["cdk"]
 ) {
   const env = await deployment.envs.accessStackForMutableStackOperations(stack);
-  const executionRoleArn = await env.replacePlaceholders(stack.cloudFormationExecutionRoleArn);
+  const executionRoleArn = cdkOptions?.cloudFormationExecutionRole ?? await env.replacePlaceholders(stack.cloudFormationExecutionRoleArn);
   const s3Url = stack
     .stackTemplateAssetObjectUrl!.replace(
       "${AWS::AccountId}",
