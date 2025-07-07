@@ -1,5 +1,5 @@
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from "path";
+import { fileURLToPath, pathToFileURL } from "url";
 import type { AwsCredentialIdentityProvider } from "@aws-sdk/types";
 import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
 import { GetCallerIdentityCommand, STSClient } from "@aws-sdk/client-sts";
@@ -149,11 +149,17 @@ export const useAWSProvider = lazy(async () => {
   const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
   const cdkToolkitPath = fileURLToPath(cdkToolkitUrl);
   const { SdkProvider } = await import(
-    path.resolve(cdkToolkitPath, "..", "api", "aws-auth", "sdk-provider.js")
+    pathToFileURL(
+      fs.resolve(cdkToolkitPath, "..", "api", "aws-auth", "sdk-provider.js")
+    ).href
   );
+
   const { IoHelper } = await import(
-    path.resolve(cdkToolkitPath, "..", "api", "io", "private", "io-helper.js")
+    pathToFileURL(
+      fs.resolve(cdkToolkitPath, "..", "api", "io", "private", "io-helper.js")
+    ).href
   );
+
   const project = useProject();
   return new SdkProvider(useAWSCredentialsProvider(), project.config.region!, {
     ioHelper: IoHelper.fromActionAwareIoHost({

@@ -12,15 +12,16 @@ const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
 const cdkToolkitPath = fileURLToPath(cdkToolkitUrl);
 const { ToolkitError } = await import(cdkToolkitPath);
 const { Context, PROJECT_CONTEXT } = await import(
-  pathToFileURL(fs_path.resolve(cdkToolkitPath, "..", "api", "context.js"))
+  pathToFileURL(fs_path.resolve(cdkToolkitPath, "..", "api", "context.js")).href
 );
 const { Settings } = await import(
   pathToFileURL(fs_path.resolve(cdkToolkitPath, "..", "api", "settings.js"))
+    .href
 );
 const { Tags } = await import(
   pathToFileURL(
     fs_path.resolve(cdkToolkitPath, "..", "api", "tags", "index.js")
-  )
+  ).href
 );
 
 export enum Command {
