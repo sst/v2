@@ -1,4 +1,4 @@
-import fs from "path";
+import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
 import type { AwsCredentialIdentityProvider } from "@aws-sdk/types";
 import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
@@ -150,13 +150,13 @@ export const useAWSProvider = lazy(async () => {
   const cdkToolkitPath = fileURLToPath(cdkToolkitUrl);
   const { SdkProvider } = await import(
     pathToFileURL(
-      fs.resolve(cdkToolkitPath, "..", "api", "aws-auth", "sdk-provider.js")
+      path.resolve(cdkToolkitPath, "..", "api", "aws-auth", "sdk-provider.js")
     ).href
   );
 
   const { IoHelper } = await import(
     pathToFileURL(
-      fs.resolve(cdkToolkitPath, "..", "api", "io", "private", "io-helper.js")
+      path.resolve(cdkToolkitPath, "..", "api", "io", "private", "io-helper.js")
     ).href
   );
 
