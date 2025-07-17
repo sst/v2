@@ -94,7 +94,7 @@ _Note_: For the bluestone health fork of sst v2, if `pnpm link` does not work, y
 ### Packaging a BSH release
 
 1. Merge changes to [`main-bsh](https://github.com/Bluestone-Health/sst-v2/tree/main-bsh), where you can also rebase off the upstream if desired.
-2. Run `cd packages/sst` and then`pnpm build && pnpm pack` to build the package.
+2. Run `cd packages/sst` and then`pnpm run pack` to build the package.
 3. Create a release on the [Bluestone Health fork](https://github.com/Bluestone-Health/sst-v2/releases/new) and upload the package. Match the version number to the upstream version you're pinned to.
 
 ### Docs
