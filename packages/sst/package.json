@@ -16,7 +16,8 @@
     "prepare": "",
     "build": "node build.mjs && tsc",
     "test": "vitest run",
-    "dev": "tsc -w"
+    "dev": "tsc -w",
+    "pack": "node pack.js"
   },
   "repository": {
     "type": "git",

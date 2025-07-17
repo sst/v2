@@ -1,0 +1,31 @@
+# Source files
+src/
+support/
+test/
+
+# Build artifacts
+*.tgz
+*.log
+*.tmp
+
+# Development files
+.sst/
+tsconfig.json
+build.mjs
+vitest.config.ts
+.gitignore
+
+# Node modules
+node_modules/
+
+# CI/CD
+.github/
+.changeset/
+
+# Documentation (keep only dist/README.md)
+README.md
+CHANGELOG.md
+
+# Development dependencies
+.eslintrc*
+.prettierrc*
