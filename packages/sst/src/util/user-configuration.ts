@@ -2,22 +2,26 @@
 import * as os from "os";
 import * as fs_path from "path";
 import * as fs from "fs";
+import { fileURLToPath, pathToFileURL } from "url";
 
 export const PROJECT_CONFIG = "cdk.json";
 export const USER_DEFAULTS = "~/.cdk.json";
 const CONTEXT_KEY = "context";
 
 const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
-const cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
-const { ToolkitError } = await import(cdkToolkitPath);
+const cdkToolkitPath = fileURLToPath(cdkToolkitUrl);
+const { ToolkitError } = await import(cdkToolkitUrl);
 const { Context, PROJECT_CONTEXT } = await import(
-  fs_path.resolve(cdkToolkitPath, "..", "api", "context.js")
+  pathToFileURL(fs_path.resolve(cdkToolkitPath, "..", "api", "context.js")).href
 );
 const { Settings } = await import(
-  fs_path.resolve(cdkToolkitPath, "..", "api", "settings.js")
+  pathToFileURL(fs_path.resolve(cdkToolkitPath, "..", "api", "settings.js"))
+    .href
 );
 const { Tags } = await import(
-  fs_path.resolve(cdkToolkitPath, "..", "api", "tags", "index.js")
+  pathToFileURL(
+    fs_path.resolve(cdkToolkitPath, "..", "api", "tags", "index.js")
+  ).href
 );
 
 export enum Command {
