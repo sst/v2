@@ -333,8 +333,8 @@ async function getCloudFormationStack(stack: CloudFormationStackArtifact) {
   const client = useAWSClient(CloudFormationClient);
   try {
     const { Stacks: stacks } = await client.send(
-      new DescribeStacksCommand({
-        StackName: stack.id,
+        new DescribeStacksCommand({
+        StackName: stack.stackName,
       })
     );
     if (!stacks || stacks.length === 0) return;
