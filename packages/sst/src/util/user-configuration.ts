@@ -7,8 +7,16 @@ export const PROJECT_CONFIG = "cdk.json";
 export const USER_DEFAULTS = "~/.cdk.json";
 const CONTEXT_KEY = "context";
 
-const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
-const cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
+let cdkToolkitPath: string;
+try {
+  const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
+  cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
+} catch (e) {
+  // Fallback for test environment where import.meta.resolve is not available
+  const module = await import("module");
+  const require = (module as any).createRequire(import.meta.url);
+  cdkToolkitPath = require.resolve("@aws-cdk/toolkit-lib");
+}
 const { ToolkitError } = await import(cdkToolkitPath);
 const { Context, PROJECT_CONTEXT } = await import(
   fs_path.resolve(cdkToolkitPath, "..", "api", "context.js")
