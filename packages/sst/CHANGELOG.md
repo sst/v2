@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.49.5
+
+### Patch Changes
+
+- [#109](https://github.com/sst/v2/pull/109) [`7727c4eb5019383f569e2653bdd240a7a05956a1`](https://github.com/sst/v2/commit/7727c4eb5019383f569e2653bdd240a7a05956a1) Thanks [@berenddeboer](https://github.com/berenddeboer)! - fix **vite_ssr_import_meta**.resolve is not a function
+
 ## 2.49.4
 
 ### Patch Changes
