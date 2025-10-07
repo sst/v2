@@ -1,23 +1,26 @@
-// @ts-nocheck
 import * as os from "os";
 import * as fs_path from "path";
 import * as fs from "fs";
 import { fileURLToPath, pathToFileURL } from "url";
 
+type Tag = { Key: string; Value: string };
+
 export const PROJECT_CONFIG = "cdk.json";
 export const USER_DEFAULTS = "~/.cdk.json";
 const CONTEXT_KEY = "context";
 
-let cdkToolkitPath: string;
+let cdkToolkitPath = "";
+let cdkToolkitUrl = "";
 
 try {
-  const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
+  cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
   cdkToolkitPath = fileURLToPath(cdkToolkitUrl);
 } catch (e) {
   // Fallback for test environment where import.meta.resolve is not available
   const module = await import("module");
   const require = (module as any).createRequire(import.meta.url);
   cdkToolkitPath = require.resolve("@aws-cdk/toolkit-lib");
+  cdkToolkitUrl = pathToFileURL(cdkToolkitPath).href;
 }
 
 const { ToolkitError } = await import(cdkToolkitUrl);
@@ -109,10 +112,10 @@ export class Configuration {
     output: "cdk.out",
   });
 
-  private readonly commandLineArguments: Settings;
-  private readonly commandLineContext: Settings;
-  private _projectConfig?: Settings;
-  private _projectContext?: Settings;
+  private readonly commandLineArguments: typeof Settings;
+  private readonly commandLineContext: typeof Settings;
+  private _projectConfig?: typeof Settings;
+  private _projectContext?: typeof Settings;
   private loaded = false;
 
   constructor(private readonly props: ConfigurationProps = {}) {
@@ -198,11 +201,11 @@ export class Configuration {
   }
 }
 
-async function loadAndLog(fileName: string): Promise<Settings> {
+async function loadAndLog(fileName: string): Promise<typeof Settings> {
   return await settingsFromFile(fileName);
 }
 
-async function settingsFromFile(fileName: string): Promise<Settings> {
+async function settingsFromFile(fileName: string): Promise<typeof Settings> {
   let settings;
   const expanded = expandHomeDir(fileName);
   if (fs.existsSync(expanded)) {
@@ -224,7 +227,7 @@ async function settingsFromFile(fileName: string): Promise<Settings> {
 }
 
 function prohibitContextKeys(
-  settings: Settings,
+  settings: typeof Settings,
   keys: string[],
   fileName: string
 ) {
@@ -245,7 +248,7 @@ function prohibitContextKeys(
 }
 
 function warnAboutContextKey(
-  settings: Settings,
+  settings: typeof Settings,
   prefix: string,
   fileName: string
 ) {
