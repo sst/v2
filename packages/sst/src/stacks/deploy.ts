@@ -1,4 +1,5 @@
 import path from "path";
+import { fileURLToPath } from "url";
 import { useBus } from "../bus.js";
 import { ConfigOptions, useProject } from "../project.js";
 import { useAWSClient, useAWSProvider } from "../credentials.js";
@@ -249,7 +250,7 @@ async function addInUseExports(
 
 async function createCdkDeployments() {
   const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
-  const cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
+  const cdkToolkitPath = fileURLToPath(cdkToolkitUrl);
   const { Deployments } = await import(
     path.resolve(cdkToolkitPath, "..", "api", "deployments", "deployments.js")
   );

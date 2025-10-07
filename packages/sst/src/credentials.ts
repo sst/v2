@@ -1,4 +1,5 @@
 import path from "path";
+import { fileURLToPath } from "url";
 import type { AwsCredentialIdentityProvider } from "@aws-sdk/types";
 import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
 import { GetCallerIdentityCommand, STSClient } from "@aws-sdk/client-sts";
@@ -146,7 +147,7 @@ export function useAWSClient<C extends any>(
 
 export const useAWSProvider = lazy(async () => {
   const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
-  const cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
+  const cdkToolkitPath = fileURLToPath(cdkToolkitUrl);
   const { SdkProvider } = await import(
     path.resolve(cdkToolkitPath, "..", "api", "aws-auth", "sdk-provider.js")
   );
