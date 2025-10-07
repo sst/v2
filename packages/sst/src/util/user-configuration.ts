@@ -20,7 +20,7 @@ try {
   cdkToolkitPath = require.resolve("@aws-cdk/toolkit-lib");
 }
 
-const { ToolkitError } = await import(cdkToolkitPath);
+const { ToolkitError } = await import(cdkToolkitUrl);
 const { Context, PROJECT_CONTEXT } = await import(
   pathToFileURL(fs_path.resolve(cdkToolkitPath, "..", "api", "context.js")).href
 );
