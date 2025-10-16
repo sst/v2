@@ -3,6 +3,7 @@ import type { App } from "../constructs/App.js";
 import { useProject } from "../project.js";
 import { useAWSProvider, useSTSIdentity } from "../credentials.js";
 import path from "path";
+import { createRequire } from "module";
 import { VisibleError } from "../error.js";
 import { Semaphore } from "../util/semaphore.js";
 import { Configuration } from "../util/user-configuration.js";
@@ -23,17 +24,29 @@ export async function synth(opts: SynthOptions) {
   const { App } = await import("../constructs/App.js");
   const cxapi = await import("@aws-cdk/cx-api");
 
-  const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
-  const cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
-  const { IoHelper } = await import(
-    path.resolve(cdkToolkitPath, "..", "api", "io", "private", "io-helper.js")
-  );
-  const { PluginHost } = await import(
-    path.resolve(cdkToolkitPath, "..", "api", "plugin", "plugin.js")
-  );
-  const { provideContextValues } = await import(
-    path.resolve(cdkToolkitPath, "..", "context-providers", "index.js")
-  );
+  const require = createRequire(import.meta.url);
+  const cdkToolkitPath = require.resolve("@aws-cdk/toolkit-lib");
+  const { IoHelper } = require(path.resolve(
+    cdkToolkitPath,
+    "..",
+    "api",
+    "io",
+    "private",
+    "io-helper.js"
+  ));
+  const { PluginHost } = require(path.resolve(
+    cdkToolkitPath,
+    "..",
+    "api",
+    "plugin",
+    "plugin.js"
+  ));
+  const { provideContextValues } = require(path.resolve(
+    cdkToolkitPath,
+    "..",
+    "context-providers",
+    "index.js"
+  ));
   const project = useProject();
 
   const cwd = process.cwd();

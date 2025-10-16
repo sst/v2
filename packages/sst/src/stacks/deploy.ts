@@ -1,4 +1,5 @@
 import path from "path";
+import { createRequire } from "module";
 import { useBus } from "../bus.js";
 import { ConfigOptions, useProject } from "../project.js";
 import { useAWSClient, useAWSProvider } from "../credentials.js";
@@ -25,7 +26,11 @@ export async function publishAssets(stacks: CloudFormationStackArtifact[]) {
     await buildAndPublishAssets(deployment, stackArtifact);
     results[stackArtifact.stackName] = {
       isUpdate: cfnStack && cfnStack.StackStatus !== "REVIEW_IN_PROGRESS",
-      params: await buildCloudFormationStackParams(deployment, stackArtifact, cdk),
+      params: await buildCloudFormationStackParams(
+        deployment,
+        stackArtifact,
+        cdk
+      ),
     };
   }
   return results;
@@ -121,7 +126,11 @@ export async function deploy(
       await deleteCloudFormationStack(stack.stackName);
     }
 
-    const stackParams = await buildCloudFormationStackParams(deployment, stack, cdk);
+    const stackParams = await buildCloudFormationStackParams(
+      deployment,
+      stack,
+      cdk
+    );
     try {
       cfnStack && cfnStack.StackStatus !== "REVIEW_IN_PROGRESS"
         ? await updateCloudFormationStack(stackParams)
@@ -248,14 +257,23 @@ async function addInUseExports(
 }
 
 async function createCdkDeployments() {
-  const cdkToolkitUrl = await import.meta.resolve!("@aws-cdk/toolkit-lib");
-  const cdkToolkitPath = new URL(cdkToolkitUrl).pathname;
-  const { Deployments } = await import(
-    path.resolve(cdkToolkitPath, "..", "api", "deployments", "deployments.js")
-  );
-  const { IoHelper } = await import(
-    path.resolve(cdkToolkitPath, "..", "api", "io", "private", "io-helper.js")
-  );
+  const require = createRequire(import.meta.url);
+  const cdkToolkitPath = require.resolve("@aws-cdk/toolkit-lib");
+  const { Deployments } = require(path.resolve(
+    cdkToolkitPath,
+    "..",
+    "api",
+    "deployments",
+    "deployments.js"
+  ));
+  const { IoHelper } = require(path.resolve(
+    cdkToolkitPath,
+    "..",
+    "api",
+    "io",
+    "private",
+    "io-helper.js"
+  ));
   const provider = await useAWSProvider();
   await useAWSProvider();
   const ioHelper = IoHelper.fromActionAwareIoHost({
@@ -300,7 +318,9 @@ async function buildCloudFormationStackParams(
   cdkOptions?: ConfigOptions["cdk"]
 ) {
   const env = await deployment.envs.accessStackForMutableStackOperations(stack);
-  const executionRoleArn = cdkOptions?.cloudFormationExecutionRole ?? await env.replacePlaceholders(stack.cloudFormationExecutionRoleArn);
+  const executionRoleArn =
+    cdkOptions?.cloudFormationExecutionRole ??
+    (await env.replacePlaceholders(stack.cloudFormationExecutionRoleArn));
   const s3Url = stack
     .stackTemplateAssetObjectUrl!.replace(
       "${AWS::AccountId}",
@@ -337,7 +357,7 @@ async function getCloudFormationStack(stack: CloudFormationStackArtifact) {
   const client = useAWSClient(CloudFormationClient);
   try {
     const { Stacks: stacks } = await client.send(
-        new DescribeStacksCommand({
+      new DescribeStacksCommand({
         StackName: stack.stackName,
       })
     );
