@@ -1,6 +1,7 @@
 import { IoTClient, DescribeEndpointCommand } from "@aws-sdk/client-iot";
 import { useAWSClient, useAWSCredentials } from "./credentials.js";
 import { VisibleError } from "./error.js";
+import { lazy } from "./util/lazy.js";
 
 export const useIOTEndpoint = lazy(async () => {
   const iot = useAWSClient(IoTClient);
@@ -25,7 +26,6 @@ import { Logger } from "./logger.js";
 import { randomUUID } from "crypto";
 import { useBootstrap } from "./bootstrap.js";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { lazy } from "./util/lazy.js";
 
 interface Fragment {
   id: string;
