@@ -1,5 +1,11 @@
 # @serverless-stack/cli2
 
+## 2.49.6
+
+### Patch Changes
+
+- [#95](https://github.com/sst/v2/pull/95) [`5b3207c0c69bbd015c67562a965e4f848fab24be`](https://github.com/sst/v2/commit/5b3207c0c69bbd015c67562a965e4f848fab24be) Thanks [@jl4nz](https://github.com/jl4nz)! - Fix path resolution - including windows
+
 ## 2.49.5
 
 ### Patch Changes
